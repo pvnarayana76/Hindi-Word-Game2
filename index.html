@@ -13,17 +13,17 @@
         }
         #game-board { 
             background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center; width: 98vw; height: 96vh; display: flex; 
-            flex-direction: column; padding: 2vh 2vw; position: relative;
+            text-align: center; width: 98vw; height: 98vh; display: flex; 
+            flex-direction: column; padding: 1.5vh 1.5vw; position: relative;
         }
 
         /* HEADER */
-        .header-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 2vh; flex-wrap: wrap; }
-        select, #new-student-btn { padding: 6px 12px; border-radius: 8px; font-size: clamp(12px, 2vmin, 15px); font-weight: bold; border: 1px solid #ccc; cursor: pointer;}
+        .header-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 1.5vh; flex-wrap: wrap; }
+        select, #new-student-btn { padding: 6px 10px; border-radius: 8px; font-size: clamp(12px, 2vmin, 15px); font-weight: bold; border: 1px solid #ccc; cursor: pointer;}
         #new-student-btn { background: #d32f2f; color: white; border: none; }
         #voice-select { background: #e3f2fd; border-color: #2196f3; max-width: 150px; }
 
-        /* RESPONSIVE SPLIT AREA (Default: Side-by-Side for Panels/Desktops) */
+        /* WIDESCREEN AREA (Default for Desktop, Panel, and Mobile Landscape) */
         .main-responsive-area {
             display: flex; flex-direction: row; flex: 1; gap: 2vw; width: 100%; overflow: hidden; align-items: stretch;
         }
@@ -31,26 +31,27 @@
         /* LEFT AREA (IMAGE) */
         .left-half {
             flex: 0.45; display: flex; align-items: center; justify-content: center;
-            background: #fcfcfc; border: 2px solid #eaeaea; border-radius: 15px; padding: 2vh;
+            background: #fcfcfc; border: 2px solid #eaeaea; border-radius: 15px; padding: 1.5vh;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
         }
         #image-container { 
             width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;
         }
-        #word-image { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: none; }
+        /* Image now stretches to completely fill the available container space */
+        #word-image { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; display: none; }
         #fallback-text { font-size: 6vmin; font-weight: bold; color: #444; display: none; }
 
         /* RIGHT AREA (GAMEPLAY) */
         .right-half {
             flex: 0.55; display: flex; flex-direction: column; justify-content: space-between; 
-            padding: 1vh 0;
+            padding: 0.5vh 0;
         }
 
-        .game-area { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2vh; flex: 1; }
+        .game-area { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.5vh; flex: 1; }
 
         /* BOXES */
         #answer-box, #scrambled-box { 
-            width: 100%; min-height: 12vh; background: #fafafa; border: 1px solid #eee;
+            width: 100%; min-height: 10vh; background: #fafafa; border: 1px solid #eee;
             border-radius: 12px; display: flex; justify-content: center; 
             align-items: center; gap: 10px; padding: 1.5vh; flex-wrap: wrap;
         }
@@ -58,59 +59,55 @@
 
         .letter-tile { 
             background-color: #e91e63; color: white; 
-            font-size: clamp(20px, 4.5vmin, 40px); padding: 1.5vh 3vw; 
+            font-size: clamp(20px, 5vmin, 40px); padding: 1vh 2.5vw; 
             border-radius: 10px; cursor: pointer; user-select: none; 
             box-shadow: 0 5px 0 #ad1457; transition: 0.1s; 
         }
-        .letter-tile:active { transform: translateY(4px); box-shadow: 0 2px 0 #ad1457; }
+        .letter-tile:active { transform: translateY(3px); box-shadow: 0 2px 0 #ad1457; }
         .tile-correct { background-color: #34a853 !important; box-shadow: 0 5px 0 #2d8a46 !important; }
         .glow-success { border: 3px solid #34a853 !important; background-color: #f0fff4 !important; }
 
-        .controls { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 45px; }
-        button { color: white; border: none; padding: 1.5vh 2vw; font-size: clamp(13px, 2vmin, 16px); font-weight: bold; cursor: pointer; border-radius: 8px; }
+        /* CONTROLS */
+        .controls { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 40px; }
+        button { color: white; border: none; padding: 1.2vh 2vw; font-size: clamp(12px, 2vmin, 16px); font-weight: bold; cursor: pointer; border-radius: 8px; }
         #back-btn { background: #607d8b; display: none; }
         #clear-btn { background: #f4b400; display: none; } 
         #skip-btn { background: #9c27b0; display: none; }
         #pronounce-btn { background: #1a73e8; display: none; } 
         #next-btn { background: #34a853; display: none; }
 
-        #status-message { height: 25px; font-size: clamp(18px, 3vmin, 22px); font-weight: bold; color: #d32f2f; text-align: center; width: 100%; }
+        #status-message { height: 25px; font-size: clamp(16px, 3vmin, 22px); font-weight: bold; color: #d32f2f; text-align: center; width: 100%; }
 
-        /* BOTTOM STATS AREA */
-        .stats-container { width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #eee; padding-top: 1.5vh; }
-        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(16px, 3vmin, 20px); font-weight: bold; }
-        #marks-display { color: #d32f2f; background: #ffebee; padding: 6px 15px; border-radius: 8px; }
-        #voice-debug { font-size: 12px; color: #888; margin-top: 1vh; }
+        /* STATS */
+        .stats-container { width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #eee; padding-top: 1vh; }
+        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(14px, 2.5vmin, 20px); font-weight: bold; }
+        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 15px; border-radius: 8px; }
+        #voice-debug { font-size: 11px; color: #888; margin-top: 0.5vh; }
         
-        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; display: none; position: absolute; }
+        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* =========================================================
-           📱 MOBILE & TABLET PORTRAIT OVERRIDES (The Magic Code)
+           📱 PORTRAIT MODE OVERRIDE (For Vertical Phones/Tablets)
            ========================================================= */
-        @media (max-aspect-ratio: 1/1), (max-width: 850px) {
-            .main-responsive-area {
-                flex-direction: column; /* Stack top to bottom */
-                gap: 1.5vh;
-            }
-            .left-half {
-                flex: 0.35; /* Image takes 35% of the height */
-                padding: 1vh;
-            }
-            .right-half {
-                flex: 0.65; /* Game takes the bottom 65% */
-            }
-            #word-image {
-                max-height: 30vh; /* Prevent image from crushing the game on phones */
-            }
-            #answer-box, #scrambled-box { 
-                min-height: 9vh; padding: 1vh; gap: 8px;
-            }
-            .letter-tile {
-                padding: 1.2vh 4vw; /* Slightly wider padding for finger-tapping */
-            }
-            .controls { gap: 5px; }
-            button { padding: 1.5vh 3vw; }
+        @media (orientation: portrait) {
+            .main-responsive-area { flex-direction: column; gap: 1.5vh; }
+            .left-half { flex: 0.4; min-height: 30vh; padding: 1vh; }
+            .right-half { flex: 0.6; }
+            #answer-box, #scrambled-box { min-height: 9vh; padding: 1vh; gap: 8px; }
+            .letter-tile { padding: 1.2vh 4vw; }
+        }
+
+        /* 📱 EXTREME LANDSCAPE OVERRIDE (For sideways phones) */
+        @media (max-height: 450px) and (orientation: landscape) {
+            #game-board { padding: 1vh 1vw; }
+            .header-controls { margin-bottom: 1vh; }
+            .left-half { padding: 0.5vh; }
+            .game-area { gap: 1vh; }
+            #answer-box, #scrambled-box { min-height: 8vh; padding: 0.5vh; }
+            .letter-tile { font-size: 18px; padding: 1vh 1.5vw; box-shadow: 0 3px 0 #ad1457;}
+            button { padding: 1vh 1.5vw; font-size: 12px; }
+            .stats-container { padding-top: 0.5vh; }
         }
     </style>
 </head>
@@ -144,7 +141,6 @@
     </div>
     
     <div class="main-responsive-area">
-        
         <div class="left-half">
             <div id="image-container">
                 <div id="loading-spinner" class="spinner"></div>
@@ -176,7 +172,6 @@
                 <div id="voice-debug">Click anywhere to wake audio.</div>
             </div>
         </div>
-
     </div>
 </div>
 
