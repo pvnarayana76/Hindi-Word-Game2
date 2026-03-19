@@ -12,73 +12,106 @@
             justify-content: center; background-color: #f0f2f5; overflow: hidden; 
         }
         #game-board { 
-            background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+            background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             text-align: center; width: 98vw; height: 96vh; display: flex; 
-            flex-direction: column; padding: 2vh; position: relative;
+            flex-direction: column; padding: 2vh 2vw; position: relative;
         }
 
-        /* TOP HEADER: Stays full width */
+        /* HEADER */
         .header-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 2vh; flex-wrap: wrap; }
-        select, #new-student-btn { padding: 6px 12px; border-radius: 8px; font-size: 15px; font-weight: bold; border: 1px solid #ccc; }
-        #new-student-btn { background: #d32f2f; color: white; border: none; cursor: pointer; }
-        #voice-select { background: #e3f2fd; border-color: #2196f3; max-width: 180px; }
+        select, #new-student-btn { padding: 6px 12px; border-radius: 8px; font-size: clamp(12px, 2vmin, 15px); font-weight: bold; border: 1px solid #ccc; cursor: pointer;}
+        #new-student-btn { background: #d32f2f; color: white; border: none; }
+        #voice-select { background: #e3f2fd; border-color: #2196f3; max-width: 150px; }
 
-        /* WIDESCREEN LAYOUT SPLIT (40 Left / 60 Right) */
-        .main-widescreen-area {
-            display: flex; flex-direction: row; flex: 1; gap: 2vw; width: 100%; overflow: hidden;
+        /* RESPONSIVE SPLIT AREA (Default: Side-by-Side for Panels/Desktops) */
+        .main-responsive-area {
+            display: flex; flex-direction: row; flex: 1; gap: 2vw; width: 100%; overflow: hidden; align-items: stretch;
         }
 
-        /* LEFT SIDE (40%) - Image Area */
+        /* LEFT AREA (IMAGE) */
         .left-half {
-            flex: 0.4; display: flex; align-items: center; justify-content: center;
-            background: #fafafa; border: 2px dashed #ccc; border-radius: 12px; padding: 1vh; position: relative;
+            flex: 0.45; display: flex; align-items: center; justify-content: center;
+            background: #fcfcfc; border: 2px solid #eaeaea; border-radius: 15px; padding: 2vh;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
         }
         #image-container { 
             width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;
         }
-        #word-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; display: none; }
-        #fallback-text { font-size: 6vh; font-weight: bold; color: #444; display: none; }
+        #word-image { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: none; }
+        #fallback-text { font-size: 6vmin; font-weight: bold; color: #444; display: none; }
 
-        /* RIGHT SIDE (60%) - Game Area */
+        /* RIGHT AREA (GAMEPLAY) */
         .right-half {
-            flex: 0.6; display: flex; flex-direction: column; justify-content: center; gap: 2vh;
+            flex: 0.55; display: flex; flex-direction: column; justify-content: space-between; 
+            padding: 1vh 0;
         }
+
+        .game-area { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2vh; flex: 1; }
 
         /* BOXES */
         #answer-box, #scrambled-box { 
-            min-height: 12vh; background: #fafafa; border: 1px solid #eee;
+            width: 100%; min-height: 12vh; background: #fafafa; border: 1px solid #eee;
             border-radius: 12px; display: flex; justify-content: center; 
-            align-items: center; gap: 10px; padding: 1vh; flex-wrap: wrap;
+            align-items: center; gap: 10px; padding: 1.5vh; flex-wrap: wrap;
         }
         #answer-box { border: 2px dashed #bbb; }
 
         .letter-tile { 
             background-color: #e91e63; color: white; 
-            font-size: clamp(20px, 5vh, 40px); padding: 1.5vh 3vw; 
+            font-size: clamp(20px, 4.5vmin, 40px); padding: 1.5vh 3vw; 
             border-radius: 10px; cursor: pointer; user-select: none; 
             box-shadow: 0 5px 0 #ad1457; transition: 0.1s; 
         }
-        .letter-tile:active { transform: translateY(3px); box-shadow: 0 2px 0 #ad1457; }
+        .letter-tile:active { transform: translateY(4px); box-shadow: 0 2px 0 #ad1457; }
         .tile-correct { background-color: #34a853 !important; box-shadow: 0 5px 0 #2d8a46 !important; }
         .glow-success { border: 3px solid #34a853 !important; background-color: #f0fff4 !important; }
 
-        /* CONTROLS & STATS */
         .controls { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 45px; }
-        button { color: white; border: none; padding: 1.5vh 2.5vw; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px; }
+        button { color: white; border: none; padding: 1.5vh 2vw; font-size: clamp(13px, 2vmin, 16px); font-weight: bold; cursor: pointer; border-radius: 8px; }
         #back-btn { background: #607d8b; display: none; }
         #clear-btn { background: #f4b400; display: none; } 
         #skip-btn { background: #9c27b0; display: none; }
         #pronounce-btn { background: #1a73e8; display: none; } 
         #next-btn { background: #34a853; display: none; }
 
-        .stats { display: flex; justify-content: space-around; font-size: 18px; font-weight: bold; padding-top: 2vh; border-top: 2px solid #eee; }
-        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 15px; border-radius: 8px; }
-        #status-message { height: 25px; font-size: 20px; font-weight: bold; color: #d32f2f; }
-        #voice-debug { font-size: 12px; color: #888; margin-top: auto; padding-bottom: 1vh;}
+        #status-message { height: 25px; font-size: clamp(18px, 3vmin, 22px); font-weight: bold; color: #d32f2f; text-align: center; width: 100%; }
+
+        /* BOTTOM STATS AREA */
+        .stats-container { width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #eee; padding-top: 1.5vh; }
+        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(16px, 3vmin, 20px); font-weight: bold; }
+        #marks-display { color: #d32f2f; background: #ffebee; padding: 6px 15px; border-radius: 8px; }
+        #voice-debug { font-size: 12px; color: #888; margin-top: 1vh; }
         
-        /* SPINNER */
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; display: none; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* =========================================================
+           📱 MOBILE & TABLET PORTRAIT OVERRIDES (The Magic Code)
+           ========================================================= */
+        @media (max-aspect-ratio: 1/1), (max-width: 850px) {
+            .main-responsive-area {
+                flex-direction: column; /* Stack top to bottom */
+                gap: 1.5vh;
+            }
+            .left-half {
+                flex: 0.35; /* Image takes 35% of the height */
+                padding: 1vh;
+            }
+            .right-half {
+                flex: 0.65; /* Game takes the bottom 65% */
+            }
+            #word-image {
+                max-height: 30vh; /* Prevent image from crushing the game on phones */
+            }
+            #answer-box, #scrambled-box { 
+                min-height: 9vh; padding: 1vh; gap: 8px;
+            }
+            .letter-tile {
+                padding: 1.2vh 4vw; /* Slightly wider padding for finger-tapping */
+            }
+            .controls { gap: 5px; }
+            button { padding: 1.5vh 3vw; }
+        }
     </style>
 </head>
 <body onclick="kickstartSpeech()">
@@ -110,7 +143,7 @@
         <button id="new-student-btn" onclick="restartForNewStudent()">🔄 Reset</button>
     </div>
     
-    <div class="main-widescreen-area">
+    <div class="main-responsive-area">
         
         <div class="left-half">
             <div id="image-container">
@@ -121,30 +154,33 @@
         </div>
 
         <div class="right-half">
-            <div id="answer-box"></div>
-            <div id="scrambled-box"></div>
-            <div id="status-message"></div>
-            
-            <div class="controls">
-                <button id="back-btn" onclick="prevWord()">⬅️ Back</button>
-                <button id="clear-btn" onclick="clearAnswer()">Clear</button>
-                <button id="skip-btn" onclick="skipWord()">Skip ⏭️</button>
-                <button id="pronounce-btn" onclick="pronounceWord()">🔊 Speak</button>
-                <button id="next-btn" onclick="nextWord()">Next ➡️</button>
+            <div class="game-area">
+                <div id="answer-box"></div>
+                <div id="scrambled-box"></div>
+                <div id="status-message"></div>
+                
+                <div class="controls">
+                    <button id="back-btn" onclick="prevWord()">⬅️ Back</button>
+                    <button id="clear-btn" onclick="clearAnswer()">Clear</button>
+                    <button id="skip-btn" onclick="skipWord()">Skip ⏭️</button>
+                    <button id="pronounce-btn" onclick="pronounceWord()">🔊 Speak</button>
+                    <button id="next-btn" onclick="nextWord()">Next ➡️</button>
+                </div>
             </div>
             
-            <div class="stats">
-                <div id="word-count">1 / 139</div>
-                <div id="marks-display">Marks: 0</div>
+            <div class="stats-container">
+                <div class="stats">
+                    <div id="word-count">1 / 139</div>
+                    <div id="marks-display">Marks: 0</div>
+                </div>
+                <div id="voice-debug">Click anywhere to wake audio.</div>
             </div>
-            <div id="voice-debug">Click anywhere to wake audio.</div>
         </div>
 
     </div>
 </div>
 
 <script>
-    // Updated Audio File Names
     const clapSound = new Audio('applause.mp3'); 
     const wrongSound = new Audio('wrong.mp3');
 
@@ -152,7 +188,7 @@
 
     const lessonsData = {
         1: { letters: ['अ', 'आ', 'न', 'म', 'र'], words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }] },
-        2: { letters: ['क', 'ख', 'ल', 'स', 'इ', 'ई'], words: [{ img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "meen.jpg", hi: "मीन", en: "Fish" }, { img: "eekh.jpg", hi: "ईख", en: "Sugarcane" }, { img: "kisan.jpg", hi: "किसान", en: "Farmer" }, { img: "neem.jpg", hi: "नीम", en: "Neem" }, { img: "keela.jpg", hi: "कीला", en: "Nail" }, { img: "sir.jpg", hi: "सिर", en: "Head" }, { img: "kamal.jpg", hi: "कमal", en: "Lotus" }] },
+        2: { letters: ['क', 'ख', 'ल', 'स', 'इ', 'ई'], words: [{ img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "meen.jpg", hi: "मीन", en: "Fish" }, { img: "eekh.jpg", hi: "ईख", en: "Sugarcane" }, { img: "kisan.jpg", hi: "किसान", en: "Farmer" }, { img: "neem.jpg", hi: "नीम", en: "Neem" }, { img: "keela.jpg", hi: "कीला", en: "Nail" }, { img: "sir.jpg", hi: "सिर", en: "Head" }, { img: "kamal.jpg", hi: "कमल", en: "Lotus" }] },
         3: { letters: ['घ', 'च', 'छ', 'ट', 'ड', 'ड़', 'उ', 'ऊ'], words: [{ img: "kusum.jpg", hi: "कुसुम", en: "Flower" }, { img: "mooli.jpg", hi: "मूली", en: "Radish" }, { img: "sui.jpg", hi: "सुई", en: "Needle" }, { img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "ladka.jpg", hi: "लड़का", en: "Boy" }, { img: "damaru.jpg", hi: "डमरू", en: "Drum" }, { img: "kachhua.jpg", hi: "कछुआ", en: "Turtle" }, { img: "choodi.jpg", hi: "चूड़ी", en: "Bangle" }, { img: "umara.jpg", hi: "उमरा", en: "Noble" }, { img: "oon.jpg", hi: "ऊन", en: "Wool" }, { img: "chaamar.jpg", hi: "चामर", en: "Fly-whisk" }, { img: "daali.jpg", hi: "डाली", en: "Branch" }, { img: "khidki.jpg", hi: "खिड़की", en: "Window" }] },
         4: { letters: ['ज', 'फ', 'ब', 'भ', 'ष', 'ऋ'], words: [{ img: "faatak.jpg", hi: "फाटक", en: "Gate" }, { img: "jaal.jpg", hi: "जाल", en: "Net" }, { img: "bakri.jpg", hi: "बकरी", en: "Goat" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "shatbhuj.jpg", hi: "षटभुज", en: "Hexagon" }, { img: "rishabh.jpg", hi: "ऋषभ", en: "Ox" }, { img: "krishak.jpg", hi: "कृषक", en: "Farmer" }, { img: "rishi.jpg", hi: "ऋषि", en: "Sage" }] },
         5: { letters: ['ग', 'त', 'थ', 'ध', 'प', 'ए', 'ऐ'], words: [{ img: "belan.jpg", hi: "बेलन", en: "Rolling Pin" }, { img: "maina.jpg", hi: "मैना", en: "Myna" }, { img: "nainan.jpg", hi: "नैनन", en: "Eyes" }, { img: "dhenu.jpg", hi: "धेनु", en: "Cow" }, { img: "kekda.jpg", hi: "केकड़ा", en: "Crab" }, { img: "tairak.jpg", hi: "तैराक", en: "Swimmer" }, { img: "rail.jpg", hi: "रेल", en: "Train" }, { img: "pair.jpg", hi: "पैर", en: "Foot" }, { img: "mej.jpg", hi: "मेज", en: "Table" }, { img: "paise.jpg", hi: "पैसे", en: "Money" }, { img: "kela.jpg", hi: "केला", en: "Banana" }] },
@@ -210,7 +246,7 @@
         
         img.onload = () => { 
             document.getElementById("loading-spinner").style.display = "none"; 
-            img.style.display = "inline-block"; 
+            img.style.display = "block"; 
             generateTiles();
         };
         
@@ -250,7 +286,6 @@
         else { availableLetters.push(selectedLetters[index]); selectedLetters.splice(index, 1); }
         updateUI();
         
-        // Instant Audio & Marks
         if (selectedLetters.join("") === currentHindiWord) {
             if (!solvedWordsGlobal.has(currentHindiWord)) {
                 currentMarks += (document.getElementById("level-select").value === "1" ? 2 : 4);
@@ -260,11 +295,11 @@
                 document.querySelectorAll("#answer-box .letter-tile").forEach(t => t.classList.add("tile-correct"));
                 document.getElementById("next-btn").style.display = "inline-block";
                 document.getElementById("skip-btn").style.display = "none";
-                clapSound.play().catch(e => console.log("Audio play blocked", e));
+                clapSound.play().catch(e => console.log("Audio block", e));
             }
         } else if (selectedLetters.length === segmentHindi(currentHindiWord).length) {
-            document.getElementById("status-message").innerText = "❌";
-            wrongSound.play().catch(e => console.log("Audio play blocked", e));
+            document.getElementById("status-message").innerText = "❌ Try again!";
+            wrongSound.play().catch(e => console.log("Audio block", e));
         }
     }
 
