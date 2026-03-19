@@ -2,260 +2,145 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hindi Vocabulary Master</title>
     <style>
+        * { box-sizing: border-box; touch-action: manipulation; }
         body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-start; background-color: #f0f2f5; 
-            margin: 0; min-height: 100vh; padding: 20px 10px; box-sizing: border-box; overflow-y: auto;
+            font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0;
+            height: 100vh; width: 100vw; display: flex; align-items: center; 
+            justify-content: center; background-color: #f0f2f5; overflow: hidden; 
         }
         #game-board { 
-            background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center; max-width: 650px; width: 100%; margin: auto; position: relative;
+            background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+            text-align: center; width: 98vw; height: 96vh; display: flex; 
+            flex-direction: column; padding: 1vh; position: relative;
         }
-        .header-controls { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
-        select { padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; border: 2px solid #ccc; background-color: #fff; cursor: pointer; }
-        #new-student-btn { background-color: #d32f2f; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        
-        #image-container { height: 220px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; position: relative; }
-        #word-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; border: 1px solid #eee; display: none; }
-        #fallback-text { font-size: 36px; font-weight: bold; color: #444; display: none; padding: 20px; border: 2px dashed #ccc; border-radius: 15px; background: #f9f9f9; }
-        
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #milestone-banner {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: #ffeb3b; border: 4px solid #fbc02d; padding: 30px; border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 100; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
+        .header-controls { display: flex; justify-content: center; gap: 5px; margin-bottom: 0.5vh; flex-wrap: wrap; }
+        select, #new-student-btn { padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: bold; border: 1px solid #ccc; }
+        #new-student-btn { background: #d32f2f; color: white; border: none; cursor: pointer; }
+
+        /* Manual Voice Dropdown Styling */
+        #voice-select { background: #e3f2fd; border-color: #2196f3; max-width: 150px; }
+
+        #image-container { 
+            flex: 2; display: flex; align-items: center; justify-content: center; 
+            min-height: 80px; margin-bottom: 0.5vh; position: relative; overflow: hidden;
         }
-        #milestone-banner.show { transform: translate(-50%, -50%) scale(1); }
-        #milestone-banner h2 { margin: 0; color: #d32f2f; font-size: 32px; }
-        #milestone-banner p { margin: 10px 0 0; font-size: 20px; font-weight: bold; color: #333; }
-
-        #answer-box, #scrambled-box { min-height: 80px; border-radius: 15px; display: flex; justify-content: center; align-items: center; gap: 12px; padding: 12px; margin-bottom: 20px; background: #fafafa; flex-wrap: wrap; border: 1px solid #eee; transition: 0.3s; }
-        #answer-box { border: 2px dashed #bbb; }
+        #word-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; display: none; }
+        #fallback-text { font-size: 5vh; font-weight: bold; color: #444; display: none; }
         
-        .glow-success { border: 3px solid #34a853 !important; box-shadow: 0 0 20px rgba(52, 168, 83, 0.4); background-color: #f0fff4 !important; animation: pulse-green 1.5s infinite; }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 5px rgba(52, 168, 83, 0.4); } 50% { box-shadow: 0 0 20px rgba(52, 168, 83, 0.7); } 100% { box-shadow: 0 0 5px rgba(52, 168, 83, 0.4); } }
+        #answer-box, #scrambled-box { 
+            min-height: 10vh; background: #fafafa; border: 1px solid #eee;
+            border-radius: 10px; display: flex; justify-content: center; 
+            align-items: center; gap: 8px; padding: 5px; flex-wrap: wrap;
+        }
+        #answer-box { border: 2px dashed #bbb; margin-bottom: 0.5vh; }
+        #scrambled-box { margin-bottom: 0.5vh; }
 
-        .letter-tile { background-color: #e91e63; color: white; font-size: 32px; padding: 12px 24px; border-radius: 12px; cursor: pointer; user-select: none; box-shadow: 0 6px 0 #ad1457; transition: 0.1s; }
-        .tile-correct { background-color: #34a853 !important; box-shadow: 0 6px 0 #2d8a46 !important; }
+        .letter-tile { 
+            background-color: #e91e63; color: white; 
+            font-size: clamp(16px, 4vh, 32px); padding: 1vh 2.5vw; 
+            border-radius: 8px; cursor: pointer; user-select: none; 
+            box-shadow: 0 4px 0 #ad1457; transition: 0.1s; 
+        }
+        .tile-correct { background-color: #34a853 !important; box-shadow: 0 4px 0 #2d8a46 !important; }
+        .glow-success { border: 2.5px solid #34a853 !important; background-color: #f0fff4 !important; }
 
-        button { color: white; border: none; padding: 15px 25px; font-size: 18px; font-weight: bold; margin: 6px; cursor: pointer; border-radius: 10px; transition: 0.3s; }
-        #back-btn { background-color: #607d8b; display: none; }
-        #clear-btn { background-color: #f4b400; } 
-        #skip-btn { background-color: #9c27b0; }
-        #pronounce-btn { background-color: #1a73e8; } 
-        #pronounce-btn:disabled { background-color: #bbb; cursor: not-allowed; opacity: 0.7; }
-        #next-btn { background-color: #34a853; display: none; }
-        
-        #status-message { font-size: 26px; font-weight: bold; height: 35px; margin: 15px 0; }
-        .stats { margin-top: 25px; display: flex; justify-content: space-around; border-top: 2px solid #eee; padding-top: 20px; font-size: 22px; font-weight: bold; }
-        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 15px; border-radius: 8px; }
-        
-        #voice-debug { margin-top: 15px; padding: 10px; border-radius: 8px; background: #eee; font-size: 14px; color: #666; font-weight: bold; }
-        #repair-voice-btn { background: #555; padding: 6px 12px; font-size: 12px; display: none; margin-top: 5px; }
-        .controls { display: flex; justify-content: center; flex-wrap: wrap; }
+        .controls { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 0.5vh; }
+        button { color: white; border: none; padding: 1vh 2vw; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 8px; }
+        #back-btn { background: #607d8b; display: none; }
+        #clear-btn { background: #f4b400; } 
+        #skip-btn { background: #9c27b0; }
+        #pronounce-btn { background: #1a73e8; } 
+        #next-btn { background: #34a853; display: none; }
+
+        .stats { display: flex; justify-content: space-around; font-size: 16px; font-weight: bold; padding: 5px; border-top: 1px solid #eee; }
+        #marks-display { color: #d32f2f; }
+        #voice-debug { font-size: 11px; color: #888; }
     </style>
 </head>
 <body onclick="kickstartSpeech()">
 
 <div id="game-board">
-    <div id="milestone-banner">
-        <h2>शाबाश! (Well Done!)</h2>
-        <p id="milestone-text">5 words correct!</p>
-    </div>
-
     <div class="header-controls">
         <select id="lesson-select" onchange="changeLesson()">
-            <option value="all">All Words (By Lesson)</option>
+            <option value="all">All Lessons</option>
             <option value="1">Lesson 1</option>
-            <option value="2">Lesson 2</option>
-            <option value="3">Lesson 3</option>
             <option value="4">Lesson 4</option>
-            <option value="5">Lesson 5</option>
-            <option value="6">Lesson 6</option>
-            <option value="7">Lesson 7 (Compound)</option>
-            <option value="8">Lesson 8 (Mixed)</option>
-            <option value="9">Lesson 9 (Numbers & Colors)</option>
-            <option value="animals">पशु-पक्षी (Animals & Birds)</option>
-            <option value="veggies">साग-सब्ज़ी (Vegetables)</option>
-            <option value="flowers">फूल (Flowers)</option>
         </select>
         <select id="level-select" onchange="loadWord()">
-            <option value="1">Level 1</option>
-            <option value="2">Level 2 (Extra Letters)</option>
+            <option value="1">Lvl 1</option>
+            <option value="2">Lvl 2</option>
         </select>
-        <button id="new-student-btn" onclick="restartForNewStudent()">🔄 New Student</button>
+        <select id="voice-select" onchange="manualVoiceSet()">
+            <option value="">Select Voice</option>
+        </select>
+        <button id="new-student-btn" onclick="restartForNewStudent()">🔄 Reset</button>
     </div>
-
     <div id="image-container">
-        <div id="loading-spinner" class="spinner"></div>
-        <img id="word-image" src="" alt="Word Image">
+        <img id="word-image" src="">
         <div id="fallback-text"></div>
     </div>
-    
     <div id="answer-box"></div>
     <div id="scrambled-box"></div>
-    <div id="status-message"></div>
-    
+    <div id="status-message" style="height:22px; font-size:16px; font-weight:bold; color:#d32f2f;"></div>
     <div class="controls">
-        <button id="back-btn" onclick="prevWord()">⬅️ Back</button>
-        <button id="clear-btn" onclick="clearAnswer()">🔄 Clear</button>
-        <button id="skip-btn" onclick="skipWord()">⏭️ Skip</button>
-        <button id="pronounce-btn" onclick="pronounceWord()" disabled>🔊 Pronounce</button>
-        <button id="next-btn" onclick="nextWord()">Next Word ➡️</button>
+        <button id="back-btn" onclick="prevWord()">⬅️</button>
+        <button id="clear-btn" onclick="clearAnswer()">Clear</button>
+        <button id="skip-btn" onclick="skipWord()">Skip ⏭️</button>
+        <button id="pronounce-btn" onclick="pronounceWord()" disabled>🔊 Speak</button>
+        <button id="next-btn" onclick="nextWord()">Next ➡️</button>
     </div>
-    
     <div class="stats">
-        <div id="word-count">Word 1</div>
+        <div id="word-count">1 / 139</div>
         <div id="marks-display">Marks: 0</div>
     </div>
-    
-    <div id="voice-debug">
-        <span id="voice-status">Voice Engine: Initializing...</span>
-        <button id="repair-voice-btn" onclick="forceSpeechInit()">🛠️ Repair Audio</button>
-    </div>
+    <div id="voice-debug">Click any tile to wake audio.</div>
 </div>
 
 <script>
-    const clapSound = new Audio('vvqne-applause-383901.mp3'); //
-    const wrongSound = new Audio('wrong.mp3');
-    
-    // --- MASTER LESSON DATA ---
+    // Matra tile logic
+    function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094c\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
+
     const lessonsData = {
-        1: { letters: ['अ', 'आ', 'न', 'म', 'र'], words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }] },
-        2: { letters: ['क', 'ख', 'ल', 'स', 'इ', 'ई'], words: [{ img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "meen.jpg", hi: "मीन", en: "Fish" }, { img: "eekh.jpg", hi: "ईख", en: "Sugarcane" }, { img: "kisan.jpg", hi: "किसान", en: "Farmer" }, { img: "neem.jpg", hi: "नीम", en: "Neem" }, { img: "keela.jpg", hi: "कीला", en: "Nail" }, { img: "sir.jpg", hi: "सिर", en: "Head" }, { img: "kamal.jpg", hi: "कमल", en: "Lotus" }] },
-        3: { letters: ['घ', 'च', 'छ', 'ट', 'ड', 'ड़', 'उ', 'ऊ'], words: [{ img: "kusum.jpg", hi: "कुसुम", en: "Flower" }, { img: "mooli.jpg", hi: "मूली", en: "Radish" }, { img: "sui.jpg", hi: "सुई", en: "Needle" }, { img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "ladka.jpg", hi: "लड़का", en: "Boy" }, { img: "damaru.jpg", hi: "डमरू", en: "Drum" }, { img: "kachhua.jpg", hi: "कछुआ", en: "Turtle" }, { img: "choodi.jpg", hi: "चूड़ी", en: "Bangle" }, { img: "umara.jpg", hi: "उमरा", en: "Noble" }, { img: "oon.jpg", hi: "ऊन", en: "Wool" }, { img: "chaamar.jpg", hi: "चामर", en: "Fly-whisk" }, { img: "daali.jpg", hi: "डाली", en: "Branch" }, { img: "khidki.jpg", hi: "खिड़की", en: "Window" }] },
-        4: { letters: ['ज', 'फ', 'ब', 'भ', 'ष', 'ऋ'], words: [{ img: "faatak.jpg", hi: "फाटक", en: "Gate" }, { img: "jaal.jpg", hi: "जाल", en: "Net" }, { img: "bakri.jpg", hi: "बकरी", en: "Goat" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "shatbhuj.jpg", hi: "षटभुज", en: "Hexagon" }, { img: "rishabh.jpg", hi: "ऋषभ", en: "Ox" }, { img: "krishak.jpg", hi: "कृषक", en: "Farmer" }, { img: "rishi.jpg", hi: "ऋषि", en: "Sage" }] },
-        5: { letters: ['ग', 'त', 'थ', 'ध', 'प', 'ए', 'ऐ'], words: [{ img: "belan.jpg", hi: "बेलन", en: "Rolling Pin" }, { img: "maina.jpg", hi: "मैना", en: "Myna" }, { img: "nainan.jpg", hi: "नैनन", en: "Eyes" }, { img: "dhenu.jpg", hi: "धेनु", en: "Cow" }, { img: "kekda.jpg", hi: "केकड़ा", en: "Crab" }, { img: "tairak.jpg", hi: "तैराक", en: "Swimmer" }, { img: "rail.jpg", hi: "रेल", en: "Train" }, { img: "pair.jpg", hi: "पैर", en: "Foot" }, { img: "mej.jpg", hi: "मेज", en: "Table" }, { img: "paise.jpg", hi: "पैसे", en: "Money" }, { img: "kela.jpg", hi: "केला", en: "Banana" }] },
-        6: { letters: ['झ', 'श', 'ह', 'ण', 'य', 'ओ', 'औ'], words: [{ img: "jhopadi.jpg", hi: "झोपड़ी", en: "Hut" }, { img: "jhash.jpg", hi: "झष", en: "Fish" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gautam.jpg", hi: "गौतम", en: "Gautam" }, { img: "koyal.jpg", hi: "कोयल", en: "Cuckoo" }, { img: "paudha.jpg", hi: "पौधा", en: "Plant" }, { img: "aurat.jpg", hi: "औरत", en: "Woman" }, { img: "tauliya.jpg", hi: "तौलिया", en: "Towel" }] },
-        7: { letters: ['क्ष', 'त्र', 'ज्ञ', 'श्र'], words: [{ img: "pakshi.jpg", hi: "पक्षी", en: "Bird" }, { img: "trikon.jpg", hi: "त्रिकोण", en: "Triangle" }, { img: "netra.jpg", hi: "नेत्र", en: "Eye" }, { img: "yagya.jpg", hi: "यज्ञ", en: "Yagya" }, { img: "ashru.jpg", hi: "अश्रु", en: "Tear" }, { img: "vriksh.jpg", hi: "वृक्ष", en: "Tree" }, { img: "shramik.jpg", hi: "श्रमिक", en: "Worker" }, { img: "gyani.jpg", hi: "ज्ञानी", en: "Scholar" }, { img: "chatra.jpg", hi: "छत्र", en: "Umbrella" }, { img: "nakshatra.jpg", hi: "नक्षत्र", en: "Star" }, { img: "trishul.jpg", hi: "त्रिशूल", en: "Trident" }, { img: "patra.jpg", hi: "पत्र", en: "Letter" }] },
-        8: { letters: [], words: [{ img: "gamla.jpg", hi: "गमला", en: "Pot" }, { img: "khilauna.jpg", hi: "खिलौना", en: "Toy" }, { img: "angoothi.jpg", hi: "अंगूठी", en: "Ring" }, { img: "choodiyan.jpg", hi: "चूड़ियाँ", en: "Bangles" }, { img: "uphaar.jpg", hi: "उपहार", en: "Gift" }, { img: "dadadadi.jpg", hi: "दादा-दादी", en: "Grandparents" }, { img: "mithaiyan.jpg", hi: "मिठाइयाँ", en: "Sweets" }] },
-        9: { letters: [], words: [{ img: "ek.jpg", hi: "एक", en: "1" }, { img: "do.jpg", hi: "दो", en: "2" }, { img: "teen.jpg", hi: "तीन", en: "3" }, { img: "char.jpg", hi: "चार", en: "4" }, { img: "panch.jpg", hi: "पाँच", en: "5" }, { img: "chah.jpg", hi: "छह", en: "6" }, { img: "saat.jpg", hi: "सात", en: "7" }, { img: "aath.jpg", hi: "आठ", en: "8" }, { img: "nau.jpg", hi: "नौ", en: "9" }, { img: "das.jpg", hi: "दस", en: "10" }, { img: "safed.jpg", hi: "सफेद", en: "White" }, { img: "laal.jpg", hi: "लाल", en: "Red" }, { img: "kesariya.jpg", hi: "केसरिया", en: "Saffron" }, { img: "neela.jpg", hi: "नीला", en: "Blue" }, { img: "kaala.jpg", hi: "काला", en: "Black" }, { img: "baingani.jpg", hi: "बैंगनी", en: "Purple" }, { img: "peela.jpg", hi: "पीला", en: "Yellow" }, { img: "hara.jpg", hi: "हरा", en: "Green" }, { img: "gulabi.jpg", hi: "गुलाबी", en: "Pink" }] },
-        "animals": { letters: [], words: [{ img: "bagh.jpg", hi: "बाघ", en: "Tiger" }, { img: "hathi.jpg", hi: "हाथी", en: "Elephant" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "khargosh.jpg", hi: "खरगोश", en: "Rabbit" }, { img: "bhains.jpg", hi: "भैंस", en: "Buffalo" }, { img: "gadha.jpg", hi: "गधा", en: "Donkey" }, { img: "kauva.jpg", hi: "कौआ", en: "Crow" }, { img: "kabutar.jpg", hi: "कबूतर", en: "Pigeon" }, { img: "tota.jpg", hi: "तोता", en: "Parrot" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gauraiya.jpg", hi: "गौरैया", en: "Sparrow" }, { img: "cheel.jpg", hi: "चील", en: "Eagle" }] },
-        "veggies": { letters: [], words: [{ img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "pyaj.jpg", hi: "प्याज", en: "Onion" }, { img: "mirch.jpg", hi: "मिर्च", en: "Chili" }, { img: "tamatar.jpg", hi: "टमाटर", en: "Tomato" }, { img: "turai.jpg", hi: "तुरई", en: "Ridge Gourd" }, { img: "baingan.jpg", hi: "बैंगन", en: "Brinjal" }, { img: "matar.jpg", hi: "मटर", en: "Peas" }, { img: "bhindi.jpg", hi: "भिंडी", en: "Okra" }, { img: "lauki.jpg", hi: "लौकी", en: "Bottle Gourd" }, { img: "adrak.jpg", hi: "अदरक", en: "Ginger" }, { img: "sem.jpg", hi: "सेम", en: "Beans" }, { img: "kakdi.jpg", hi: "ककड़ी", en: "Cucumber" }, { img: "karela.jpg", hi: "करेला", en: "Bitter Gourd" }, { img: "kundru.jpg", hi: "कुंदरू", en: "Ivy Gourd" }, { img: "chichinda.jpg", hi: "चिचिंडा", en: "Snake Gourd" }, { img: "shakarkand.jpg", hi: "शकरकंद", en: "Sweet Potato" }, { img: "phoolgobhi.jpg", hi: "फूल गोभी", en: "Cauliflower" }, { img: "bandgobhi.jpg", hi: "बंद गोभी", en: "Cabbage" }, { img: "sahjan.jpg", hi: "सहजन", en: "Drumstick" }, { img: "gajar.jpg", hi: "गाजर", en: "Carrot" }, { img: "palak.jpg", hi: "पालक", en: "Spinach" }, { img: "chaulai.jpg", hi: "चौलाई", en: "Amaranth" }, { img: "haridhaniya.jpg", hi: "हरी धनिया", en: "Coriander" }, { img: "meethaneem.jpg", hi: "मीठा नीम", en: "Curry Leaves" }, { img: "lahsun.jpg", hi: "लहसुन", en: "Garlic" }, { img: "kumhada.jpg", hi: "कुम्हड़ा", en: "Pumpkin" }, { img: "imli.jpg", hi: "इमली", en: "Tamarind" }] },
-        "flowers": { letters: [], words: [{ img: "gulab.jpg", hi: "गुलाब", en: "Rose" }, { img: "kamal.jpg", hi: "कमल", en: "Lotus" }, { img: "kevda.jpg", hi: "केवड़ा", en: "Kewra" }, { img: "chameli.jpg", hi: "चमेली", en: "Jasmine" }, { img: "champa.jpg", hi: "चंपा", en: "Champa" }, { img: "juhi.jpg", hi: "जूही", en: "Juhi" }, { img: "gudhal.jpg", hi: "गुड़हल", en: "Hibiscus" }, { img: "genda.jpg", hi: "गेंदा", en: "Marigold" }, { img: "parijat.jpg", hi: "पारिजात", en: "Parijat" }, { img: "surajmukhi.jpg", hi: "सूरज मुखी", en: "Sunflower" }] }
+        1: { letters: ['अ', 'आ', 'न', 'म', 'र'], words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }] },
+        4: { letters: ['ज', 'फ', 'ब', 'भ', 'ष', 'ऋ'], words: [{ img: "krishak.jpg", hi: "कृषक", en: "Farmer" }] }
     };
 
-    let currentWordList = [], currentIndex = 0, currentMarks = 0, currentHindiWord = "", availableLetters = [], selectedLetters = [], solvedWordsGlobal = new Set(), targetTileCount = 0;
-    let correctAnswerCount = 0; 
-
-    // --- SPEECH ENGINE LOGIC ---
-    let hindiVoice = null;
+    let currentWordList = [], currentIndex = 0, currentMarks = 0, currentHindiWord = "", availableLetters = [], selectedLetters = [], solvedWordsGlobal = new Set();
     let synth = window.speechSynthesis;
+    let manualVoice = null;
 
-    function forceSpeechInit() {
-        if (!synth) return;
-        synth.cancel();
-        synth.speak(new SpeechSynthesisUtterance(" "));
-        loadVoices();
-    }
-
-    function loadVoices() {
-        const voices = synth.getVoices();
-        hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
-        const status = document.getElementById("voice-status");
-        const btn = document.getElementById("pronounce-btn");
-        const repair = document.getElementById("repair-voice-btn");
-
-        if (hindiVoice) {
-            status.innerText = "Voice Engine: Ready ✔️";
-            status.style.color = "#34a853";
-            btn.disabled = false;
-            repair.style.display = "none";
-        } else {
-            status.innerText = "Voice Engine: Initializing... ❌";
-            repair.style.display = "inline-block";
-        }
-    }
-
-    setInterval(() => { if (!hindiVoice) loadVoices(); }, 1500);
-
-    function pronounceWord() {
-        if (!hindiVoice) return;
-        synth.cancel();
-        const u = new SpeechSynthesisUtterance(currentHindiWord);
-        u.voice = hindiVoice; u.lang = 'hi-IN'; u.rate = 0.8;
-        synth.speak(u);
-    }
-
-    // --- GAME ENGINE ---
-    // Accurate Hindi Segmenter Fix
-    function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094c\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
-    
-    function shuffleArray(array) { let s = [...array]; for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; } return s; }
-
-    // Sequential Shuffling Logic
-    function buildAllWordsList() {
-        let allWords = [];
-        const order = [1, 2, 3, 4, 5, 6, 7, 8, 9, "animals", "veggies", "flowers"];
-        order.forEach(key => {
-            if (lessonsData[key]) {
-                let tagged = lessonsData[key].words.map(w => ({ ...w, lessonOrigin: key }));
-                allWords = allWords.concat(shuffleArray(tagged));
-            }
-        });
-        return allWords;
-    }
-
-    // Cumulative Decoy Logic
-    function getDecoyPool(lessonKey) {
-        const order = [1, 2, 3, 4, 5, 6, 7, 8, 9, "animals", "veggies", "flowers"];
-        let pool = [];
-        for (let key of order) {
-            if (lessonsData[key] && lessonsData[key].letters && lessonsData[key].letters.length > 0) {
-                pool = pool.concat(lessonsData[key].letters);
-            }
-            if (key.toString() === lessonKey.toString()) break;
-        }
-        if (pool.length === 0) return lessonsData[1].letters;
-        return pool;
-    }
+    function shuffleArray(a) { let s = [...a]; for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; } return s; }
 
     function loadWord() {
-        if (currentIndex >= currentWordList.length) {
-            document.getElementById("image-container").innerHTML = '<div style="font-size:40px;font-weight:bold;color:#34a853;">End of Course! 🏆</div>';
-            document.querySelector(".controls").style.display = "none"; return;
-        }
-
+        if (currentIndex >= currentWordList.length) return;
         const img = document.getElementById("word-image");
-        const fallback = document.getElementById("fallback-text");
-        const spinner = document.getElementById("loading-spinner");
         const aBox = document.getElementById("answer-box");
-
-        // RESET UI & FIX GHOSTING
         aBox.classList.remove("glow-success");
-        img.style.display = "none";
-        fallback.style.display = "none";
-        spinner.style.display = "block";
-        img.src = ""; 
+        img.style.display = "none"; img.src = "";
+        document.getElementById("fallback-text").style.display = "none";
 
         currentHindiWord = currentWordList[currentIndex].hi;
-        document.getElementById("word-count").innerText = `Word ${currentIndex + 1} of ${currentWordList.length}`;
+        document.getElementById("word-count").innerText = `${currentIndex + 1} / ${currentWordList.length}`;
         document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
 
         img.src = currentWordList[currentIndex].img;
-        img.onload = () => { spinner.style.display = "none"; img.style.display = "inline-block"; };
-        img.onerror = () => { spinner.style.display = "none"; showFallback(); };
+        img.onload = () => { img.style.display = "inline-block"; };
+        img.onerror = () => { document.getElementById("fallback-text").innerText = currentWordList[currentIndex].en; document.getElementById("fallback-text").style.display = "block"; };
 
-        // TILE LOGIC FIX
         let correctTiles = segmentHindi(currentHindiWord);
-        targetTileCount = correctTiles.length;
         availableLetters = shuffleArray([...correctTiles]);
-
-        // Decoy Logic
         if (document.getElementById("level-select").value === "2") {
-            let p = getDecoyPool(currentWordList[currentIndex].lessonOrigin || 1);
-            availableLetters.push(p[Math.floor(Math.random()*p.length)]);
+            availableLetters.push(['क','ल','म'][Math.floor(Math.random()*3)]);
         }
         availableLetters = shuffleArray(availableLetters);
         selectedLetters = []; 
         document.getElementById("status-message").innerText = "";
         document.getElementById("next-btn").style.display = "none";
+        document.getElementById("skip-btn").style.display = "inline-block";
         document.getElementById("back-btn").style.display = (currentIndex > 0) ? "inline-block" : "none";
         updateUI();
     }
@@ -264,45 +149,25 @@
         if (fromAvailable) { selectedLetters.push(availableLetters[index]); availableLetters.splice(index, 1); }
         else { availableLetters.push(selectedLetters[index]); selectedLetters.splice(index, 1); }
         updateUI();
-
-        const aBox = document.getElementById("answer-box");
         if (selectedLetters.join("") === currentHindiWord) {
             if (!solvedWordsGlobal.has(currentHindiWord)) {
-                let pts = document.getElementById("level-select").value === "1" ? 2 : 4;
-                currentMarks += pts;
-                correctAnswerCount++; 
+                currentMarks += (document.getElementById("level-select").value === "1" ? 2 : 4);
                 solvedWordsGlobal.add(currentHindiWord);
-                
-                // --- GLOW & TILE SUCCESS ---
-                aBox.classList.add("glow-success");
+                document.getElementById("answer-box").classList.add("glow-success");
                 document.querySelectorAll("#answer-box .letter-tile").forEach(t => t.classList.add("tile-correct"));
-                
-                document.getElementById("status-message").innerText = "Correct! 🎯";
-                document.getElementById("status-message").style.color = "#34a853";
-                clapSound.play().catch(() => {});
-
-                if (correctAnswerCount % 5 === 0) { showMilestone(); }
+                document.getElementById("next-btn").style.display = "inline-block";
+                document.getElementById("skip-btn").style.display = "none";
             }
-            document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
-            document.getElementById("next-btn").style.display = "inline-block";
-        } else if (selectedLetters.length === targetTileCount) {
-            // FAILED ATTEMPT RECOGNITION
-            aBox.classList.remove("glow-success");
-            document.getElementById("status-message").innerText = "Try again! ❌";
-            document.getElementById("status-message").style.color = "#d32f2f";
-            wrongSound.play().catch(() => {});
-        } else { aBox.classList.remove("glow-success"); document.getElementById("status-message").innerText = ""; }
+        } else if (selectedLetters.length === segmentHindi(currentHindiWord).length) {
+            document.getElementById("status-message").innerText = "❌";
+        }
     }
 
-    function showMilestone() {
-        const banner = document.getElementById("milestone-banner");
-        const text = document.getElementById("milestone-text");
-        text.innerText = `${correctAnswerCount} words correct! Excellent work!`;
-        banner.classList.add("show");
-        // AUTO DISMISS AFTER 3 SECONDS
-        setTimeout(() => { banner.classList.remove("show"); }, 3000); 
-    }
-
+    function skipWord() { if (currentIndex < currentWordList.length - 1) { currentIndex++; loadWord(); } }
+    function nextWord() { if (currentIndex < currentWordList.length - 1) { currentIndex++; loadWord(); } }
+    function prevWord() { if (currentIndex > 0) { currentIndex--; loadWord(); } }
+    function clearAnswer() { availableLetters = [...availableLetters, ...selectedLetters]; selectedLetters = []; updateUI(); }
+    
     function updateUI() {
         const sBox = document.getElementById("scrambled-box"), aBox = document.getElementById("answer-box");
         sBox.innerHTML = ""; aBox.innerHTML = "";
@@ -310,21 +175,60 @@
         selectedLetters.forEach((l, i) => { const d = document.createElement("div"); d.className = "letter-tile"; d.innerText = l; d.onclick = () => moveLetter(i, false); aBox.appendChild(d); });
     }
 
-    function kickstartSpeech() { forceSpeechInit(); }
-
     function changeLesson() {
         const sel = document.getElementById("lesson-select").value;
-        currentWordList = (sel === 'all') ? buildAllWordsList() : shuffleArray(lessonsData[sel].words.map(w => ({...w, lessonOrigin: sel})));
+        if (sel === 'all') {
+            currentWordList = []; Object.keys(lessonsData).forEach(k => currentWordList = [...currentWordList, ...lessonsData[k].words]);
+        } else { currentWordList = shuffleArray(lessonsData[sel].words); }
         currentIndex = 0; loadWord();
     }
 
-    function showFallback() { document.getElementById("word-image").style.display = "none"; document.getElementById("fallback-text").style.display = "block"; document.getElementById("fallback-text").innerText = currentWordList[currentIndex].en; }
-    function prevWord() { if (currentIndex > 0) { currentIndex--; loadWord(); } }
-    function nextWord() { currentIndex++; loadWord(); }
-    function clearAnswer() { availableLetters = [...availableLetters, ...selectedLetters]; selectedLetters = []; updateUI(); }
-    function restartForNewStudent() { currentMarks = 0; correctAnswerCount = 0; solvedWordsGlobal.clear(); document.getElementById("lesson-select").value = "all"; changeLesson(); }
+    function restartForNewStudent() { currentMarks = 0; solvedWordsGlobal.clear(); currentIndex = 0; changeLesson(); }
 
-    window.onload = () => { forceSpeechInit(); changeLesson(); };
+    // --- ENHANCED VOICE LOGIC ---
+    function kickstartSpeech() { synth.speak(new SpeechSynthesisUtterance(" ")); }
+    
+    function loadVoices() {
+        const voices = synth.getVoices();
+        const vSelect = document.getElementById("voice-select");
+        const hindiFound = voices.some(v => v.lang.includes('hi'));
+        
+        if (vSelect.options.length <= 1) {
+            voices.forEach((v, i) => {
+                const opt = document.createElement("option");
+                opt.value = i;
+                opt.innerText = `${v.name} (${v.lang})`;
+                vSelect.appendChild(opt);
+            });
+        }
+
+        if (hindiFound) { 
+            document.getElementById("pronounce-btn").disabled = false;
+            document.getElementById("voice-debug").innerText = "Hindi voice detected! ✔️";
+        }
+    }
+
+    function manualVoiceSet() {
+        const voices = synth.getVoices();
+        const idx = document.getElementById("voice-select").value;
+        if (idx !== "") {
+            manualVoice = voices[idx];
+            document.getElementById("pronounce-btn").disabled = false;
+        }
+    }
+
+    synth.onvoiceschanged = loadVoices;
+
+    function pronounceWord() {
+        synth.cancel(); 
+        const u = new SpeechSynthesisUtterance(currentHindiWord);
+        if (manualVoice) { u.voice = manualVoice; }
+        else { u.lang = 'hi-IN'; }
+        u.rate = 0.8; 
+        synth.speak(u);
+    }
+
+    window.onload = () => { changeLesson(); setTimeout(loadVoices, 1000); };
 </script>
 </body>
 </html>
