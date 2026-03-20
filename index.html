@@ -8,12 +8,14 @@
         * { box-sizing: border-box; touch-action: manipulation; }
         body { 
             font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0;
-            height: 100vh; width: 100vw; display: flex; align-items: center; 
-            justify-content: center; background-color: #f0f2f5; overflow: hidden; 
+            /* 🔥 THE MOBILE FIX: dvh (Dynamic Viewport Height) 🔥 */
+            height: 100vh; height: 100dvh; 
+            display: flex; align-items: center; justify-content: center; 
+            background-color: #f0f2f5; overflow: hidden; 
         }
         #game-board { 
             background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center; width: 98vw; height: 98vh; display: flex; 
+            text-align: center; width: 98vw; height: 96%; display: flex; 
             flex-direction: column; padding: 1.5vh 1.5vw; position: relative;
         }
 
@@ -39,16 +41,10 @@
         }
         
         #word-image { 
-            width: auto; 
-            height: auto; 
-            max-width: 100%; 
-            max-height: 100%; 
-            object-fit: contain; 
-            border-radius: 10px; 
-            display: none; 
+            width: auto; height: auto; max-width: 100%; max-height: 100%; 
+            object-fit: contain; border-radius: 10px; display: none; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
-        
         #fallback-text { font-size: 6vmin; font-weight: bold; color: #444; display: none; }
 
         /* RIGHT AREA (GAMEPLAY) */
@@ -97,16 +93,23 @@
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* PORTRAIT MODE OVERRIDE */
+        /* =========================================================
+           📱 PORTRAIT MODE OVERRIDE (For Vertical Phones/Tablets)
+           ========================================================= */
         @media (orientation: portrait) {
-            .main-responsive-area { flex-direction: column; gap: 1.5vh; }
-            .left-half { flex: 0.4; min-height: 30vh; padding: 1vh; }
-            .right-half { flex: 0.6; }
-            #answer-box, #scrambled-box { min-height: 9vh; padding: 1vh; gap: 8px; }
-            .letter-tile { padding: 1.2vh 4vw; }
+            #game-board { padding: 1vh 2vw; } /* Tighter outer padding */
+            .header-controls { margin-bottom: 1vh; }
+            .main-responsive-area { flex-direction: column; gap: 1vh; } /* Stack vertically with small gap */
+            .left-half { flex: 0 0 35%; padding: 0.5vh; border-radius: 10px; } /* Image exactly 35% height */
+            .right-half { flex: 1; justify-content: space-evenly; }
+            .game-area { gap: 1.5vh; }
+            #answer-box, #scrambled-box { min-height: 8vh; padding: 1vh; gap: 6px; } /* Slimmer boxes */
+            .letter-tile { padding: 1vh 3vw; font-size: clamp(18px, 5vmin, 35px); }
+            button { padding: 1.2vh 3vw; }
+            .stats-container { padding-top: 0.5vh; }
         }
 
-        /* EXTREME LANDSCAPE OVERRIDE */
+        /* 📱 EXTREME LANDSCAPE OVERRIDE (Sideways Phones) */
         @media (max-height: 450px) and (orientation: landscape) {
             #game-board { padding: 1vh 1vw; }
             .header-controls { margin-bottom: 1vh; }
@@ -187,7 +190,7 @@
     const clapSound = new Audio('applause.mp3'); 
     const wrongSound = new Audio('wrong.mp3');
 
-    // 🔥 HALANTH BUG FIX: Changed \u094c to \u094d to properly bind the halanth to its consonant tile 🔥
+    // Halanth logic fix properly applied
     function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094d\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
 
     const lessonsData = {
