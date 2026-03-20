@@ -38,7 +38,6 @@
             width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;
         }
         
-        /* 🔥 THE ANTI-BLUR FIX 🔥 */
         #word-image { 
             width: auto; 
             height: auto; 
@@ -98,7 +97,7 @@
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* PORTRAIT MODE OVERRIDE (For Vertical Phones/Tablets) */
+        /* PORTRAIT MODE OVERRIDE */
         @media (orientation: portrait) {
             .main-responsive-area { flex-direction: column; gap: 1.5vh; }
             .left-half { flex: 0.4; min-height: 30vh; padding: 1vh; }
@@ -107,7 +106,7 @@
             .letter-tile { padding: 1.2vh 4vw; }
         }
 
-        /* EXTREME LANDSCAPE OVERRIDE (For sideways phones) */
+        /* EXTREME LANDSCAPE OVERRIDE */
         @media (max-height: 450px) and (orientation: landscape) {
             #game-board { padding: 1vh 1vw; }
             .header-controls { margin-bottom: 1vh; }
@@ -188,7 +187,8 @@
     const clapSound = new Audio('applause.mp3'); 
     const wrongSound = new Audio('wrong.mp3');
 
-    function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094c\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
+    // 🔥 HALANTH BUG FIX: Changed \u094c to \u094d to properly bind the halanth to its consonant tile 🔥
+    function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094d\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
 
     const lessonsData = {
         1: { letters: ['अ', 'आ', 'न', 'म', 'र'], words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }] },
