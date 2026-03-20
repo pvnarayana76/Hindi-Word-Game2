@@ -83,10 +83,11 @@
 
         #status-message { height: 25px; font-size: clamp(16px, 3vmin, 22px); font-weight: bold; text-align: center; width: 100%; transition: 0.2s;}
 
-        /* STATS */
+        /* STATS & TIMER */
         .stats-container { width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #eee; padding-top: 1vh; }
-        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(14px, 2.5vmin, 20px); font-weight: bold; }
-        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 15px; border-radius: 8px; }
+        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(13px, 2.5vmin, 18px); font-weight: bold; gap: 5px; }
+        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 12px; border-radius: 8px; }
+        #timer-display { color: #1976d2; background: #e3f2fd; padding: 5px 12px; border-radius: 8px; }
         #voice-debug { font-size: 11px; color: #888; margin-top: 0.5vh; }
         
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; position: absolute; }
@@ -175,6 +176,7 @@
             <div class="stats-container">
                 <div class="stats">
                     <div id="word-count">1 / 139</div>
+                    <div id="timer-display">⏱️ 00:00</div>
                     <div id="marks-display">Marks: 0</div>
                 </div>
                 <div id="voice-debug">Click anywhere to wake audio.</div>
@@ -187,6 +189,11 @@
     const clapSound = new Audio('applause.mp3'); 
     const wrongSound = new Audio('wrong.mp3');
 
+    // Timer Variables
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    // Halanth logic fix properly applied
     function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094d\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
 
     const lessonsData = {
@@ -218,6 +225,23 @@
             if (key.toString() === lessonKey?.toString()) break;
         }
         return pool.length > 0 ? pool : ['क','ल','म','न','र','स'];
+    }
+
+    // --- TIMER LOGIC ---
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerSeconds = 0;
+        document.getElementById("timer-display").innerText = "⏱️ 00:00";
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            let h = Math.floor(timerSeconds / 3600);
+            let m = Math.floor((timerSeconds % 3600) / 60);
+            let s = timerSeconds % 60;
+            let display = "";
+            if (h > 0) display += (h < 10 ? "0" + h : h) + ":";
+            display += (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+            document.getElementById("timer-display").innerText = "⏱️ " + display;
+        }, 1000);
     }
 
     function loadWord() {
@@ -290,32 +314,26 @@
         updateUI();
         
         if (selectedLetters.join("") === currentHindiWord) {
-            
-            // 1. VISUAL SUCCESS FOR EVERY SOLVE (Separated from points)
             document.getElementById("answer-box").classList.add("glow-success");
             document.querySelectorAll("#answer-box .letter-tile").forEach(t => t.classList.add("tile-correct"));
             document.getElementById("next-btn").style.display = "inline-block";
             document.getElementById("skip-btn").style.display = "none";
             document.getElementById("clear-btn").style.display = "none";
             
-            // 2. SCORING & AUDIO (Only if it hasn't been scored yet)
             if (!solvedWordsGlobal.has(currentHindiWord)) {
-                // Points updated: Level 1 = 1 pt, Level 2 = 2 pts
                 currentMarks += (document.getElementById("level-select").value === "1" ? 1 : 2);
                 solvedWordsGlobal.add(currentHindiWord);
                 document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`; 
                 clapSound.play().catch(e => console.log("Audio block", e));
             } else {
-                // Bug fix: Tells them they already got points for this word
                 document.getElementById("status-message").innerText = "Already Scored! ✔️";
-                document.getElementById("status-message").style.color = "#34a853"; // Green text
+                document.getElementById("status-message").style.color = "#34a853";
             }
         } else if (selectedLetters.length === segmentHindi(currentHindiWord).length) {
             document.getElementById("status-message").innerText = "❌ Try again!";
-            document.getElementById("status-message").style.color = "#d32f2f"; // Red text
+            document.getElementById("status-message").style.color = "#d32f2f";
             wrongSound.play().catch(e => console.log("Audio block", e));
         } else {
-            // Clears the message if they pull a tile back down
             document.getElementById("status-message").innerText = "";
         }
     }
@@ -347,7 +365,13 @@
         currentIndex = 0; loadWord();
     }
 
-    function restartForNewStudent() { currentMarks = 0; solvedWordsGlobal.clear(); currentIndex = 0; changeLesson(); }
+    function restartForNewStudent() { 
+        currentMarks = 0; 
+        solvedWordsGlobal.clear(); 
+        currentIndex = 0; 
+        changeLesson();
+        startTimer(); // Resets timer for new student
+    }
 
     function kickstartSpeech() { synth.speak(new SpeechSynthesisUtterance(" ")); }
     
@@ -389,7 +413,11 @@
         u.rate = 0.8; synth.speak(u);
     }
 
-    window.onload = () => { changeLesson(); setTimeout(loadVoices, 1000); };
+    window.onload = () => { 
+        changeLesson(); 
+        startTimer(); // Starts timer immediately when page loads
+        setTimeout(loadVoices, 1000); 
+    };
 </script>
 </body>
 </html>
