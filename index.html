@@ -193,8 +193,11 @@
     let timerSeconds = 0;
     let timerInterval = null;
 
-    // Halanth logic fix properly applied
-    function segmentHindi(text) { return text.match(/[\u0900-\u094f\u0962-\u0963][\u093e-\u094d\u0962-\u0963\u0901-\u0903\u093a-\u093c]*|./g) || []; }
+    // 🔥 THE SAMYUKTAKSHAR FIX: Groups consonants joined by a halanth into a single tile, and removes empty space tiles
+    function segmentHindi(text) { 
+        let rawTiles = text.match(/(?:[\u0915-\u0939\u0958-\u095f]\u094d)+[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|./g) || [];
+        return rawTiles.filter(t => t.trim() !== ''); // Removes spaces turning into blank tiles
+    }
 
     const lessonsData = {
         1: { letters: ['अ', 'आ', 'न', 'म', 'र'], words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }] },
@@ -227,7 +230,6 @@
         return pool.length > 0 ? pool : ['क','ल','म','न','र','स'];
     }
 
-    // --- TIMER LOGIC ---
     function startTimer() {
         if (timerInterval) clearInterval(timerInterval);
         timerSeconds = 0;
@@ -370,7 +372,7 @@
         solvedWordsGlobal.clear(); 
         currentIndex = 0; 
         changeLesson();
-        startTimer(); // Resets timer for new student
+        startTimer(); 
     }
 
     function kickstartSpeech() { synth.speak(new SpeechSynthesisUtterance(" ")); }
@@ -415,7 +417,7 @@
 
     window.onload = () => { 
         changeLesson(); 
-        startTimer(); // Starts timer immediately when page loads
+        startTimer(); 
         setTimeout(loadVoices, 1000); 
     };
 </script>
