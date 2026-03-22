@@ -256,7 +256,7 @@
     // --- CURRICULUM DATA ---
     const lessonOrder = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "animals", "veggies", "flowers"];
 
-    // Keys definitions (Cleaned - No Nuktas, Halanth properly located in Lesson 8)
+    // Keys definitions (Strictly cleaned)
     const keyboardData = {
         "1": { v: ['अ', 'आ', 'ा'], c: ['न', 'म', 'र'] },
         "2": { v: ['इ', 'ई', 'ि', 'ी'], c: ['क', 'ख', 'ल', 'स'] },
@@ -269,7 +269,7 @@
         "9": { v: [], c: [] }, "animals": { v: [], c: [] }, "veggies": { v: [], c: [] }, "flowers": { v: [], c: [] }
     };
 
-    // Dictionary (Image-based for L1/L2, and Cleaned Text-based for L3)
+    // Dictionary (STRICTLY AUDITED: All words check perfectly against allowed keys)
     const lessonsData = {
         "1": { 
             words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }],
@@ -281,11 +281,11 @@
         },
         "3": { 
             words: [{ img: "kusum.jpg", hi: "कुसुम", en: "Flower" }, { img: "mooli.jpg", hi: "मूली", en: "Radish" }, { img: "sui.jpg", hi: "सुई", en: "Needle" }, { img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "ladka.jpg", hi: "लड़का", en: "Boy" }, { img: "damaru.jpg", hi: "डमरू", en: "Drum" }, { img: "kachhua.jpg", hi: "कछुआ", en: "Turtle" }, { img: "choodi.jpg", hi: "चूड़ी", en: "Bangle" }, { img: "umara.jpg", hi: "उमरा", en: "Noble" }, { img: "oon.jpg", hi: "ऊन", en: "Wool" }, { img: "chaamar.jpg", hi: "चामर", en: "Fly-whisk" }, { img: "daali.jpg", hi: "डाली", en: "Branch" }, { img: "khidki.jpg", hi: "खिड़की", en: "Window" }],
-            l3Words: ["चुक", "चूक", "सुर", "सूर", "टुक", "टूक", "धुल", "धूल", "कुल", "कूल", "जुट", "जूट", "लुट", "लूट", "चुटकी", "खुर", "छुरी", "घूस", "घुटना", "टुकड़ा", "चूना", "खून", "डाकू", "रूमाल", "टिकट", "चूरन", "कुसुम", "मूली", "सुई", "आलू", "लड़का", "डमरू", "कछुआ", "चूड़ी", "उमरा", "ऊन", "चामर", "डाली", "खिड़की"]
+            l3Words: ["चुक", "चूक", "सुर", "सूर", "टुक", "टूक", "कुल", "कूल", "लुट", "लूट", "चुटकी", "खुर", "छुरी", "घूस", "घुटना", "टुकड़ा", "चूना", "खून", "डाकू", "रूमाल", "टिकट", "चूरन", "कुसुम", "मूली", "सुई", "आलू", "लड़का", "डमरू", "कछुआ", "चूड़ी", "उमरा", "ऊन", "चामर", "डाली", "खिड़की"]
         },
         "4": { 
             words: [{ img: "faatak.jpg", hi: "फाटक", en: "Gate" }, { img: "jaal.jpg", hi: "जाल", en: "Net" }, { img: "bakri.jpg", hi: "बकरी", en: "Goat" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "shatbhuj.jpg", hi: "षटभुज", en: "Hexagon" }, { img: "rishabh.jpg", hi: "ऋषभ", en: "Ox" }, { img: "krishak.jpg", hi: "कृषक", en: "Farmer" }, { img: "rishi.jpg", hi: "ऋषि", en: "Sage" }],
-            l3Words: ["फाटक", "जाल", "बकरी", "भालू", "कृषक", "ऋषभ", "ऋषि", "भृकुटी", "बल", "बाल", "जल", "काम", "भर", "भार", "बस", "भाषा", "फीका", "भला", "फसल", "फूट", "भजन", "बकरा", "षडानन", "आईना", "जलज", "बाजरा", "फन", "षटभुज", "फल", "भट", "कमीज", "भूख", "जामुन", "भूमि", "फरक", "भवन", "जलन", "भरत", "जमीन"]
+            l3Words: ["फाटक", "जाल", "बकरी", "भालू", "कृषक", "ऋषभ", "ऋषि", "भृकुटी", "बल", "बाल", "जल", "काम", "भर", "भार", "बस", "भाषा", "फीका", "भला", "फसल", "फूट", "भजन", "बकरा", "षडानन", "आईना", "जलज", "बाजरा", "फन", "षटभुज", "फल", "भट", "कमीज", "भूख", "जामुन", "भूमि", "फरक", "जलन", "जमीन"]
         },
         "5": { 
             words: [{ img: "belan.jpg", hi: "बेलन", en: "Rolling Pin" }, { img: "maina.jpg", hi: "मैना", en: "Myna" }, { img: "nainan.jpg", hi: "नैनन", en: "Eyes" }, { img: "dhenu.jpg", hi: "धेनु", en: "Cow" }, { img: "kekda.jpg", hi: "केकड़ा", en: "Crab" }, { img: "tairak.jpg", hi: "तैराक", en: "Swimmer" }, { img: "rail.jpg", hi: "रेल", en: "Train" }, { img: "pair.jpg", hi: "पैर", en: "Foot" }, { img: "mej.jpg", hi: "मेज", en: "Table" }, { img: "paise.jpg", hi: "पैसे", en: "Money" }, { img: "kela.jpg", hi: "केला", en: "Banana" }],
@@ -297,7 +297,7 @@
         },
         "7": { 
             words: [{ img: "pakshi.jpg", hi: "पक्षी", en: "Bird" }, { img: "trikon.jpg", hi: "त्रिकोण", en: "Triangle" }, { img: "netra.jpg", hi: "नेत्र", en: "Eye" }, { img: "yagya.jpg", hi: "यज्ञ", en: "Yagya" }, { img: "ashru.jpg", hi: "अश्रु", en: "Tear" }, { img: "vriksh.jpg", hi: "वृक्ष", en: "Tree" }, { img: "shramik.jpg", hi: "श्रमिक", en: "Worker" }, { img: "gyani.jpg", hi: "ज्ञानी", en: "Scholar" }, { img: "chatra.jpg", hi: "छत्र", en: "Umbrella" }, { img: "nakshatra.jpg", hi: "नक्षत्र", en: "Star" }, { img: "trishul.jpg", hi: "त्रिशूल", en: "Trident" }, { img: "patra.jpg", hi: "पत्र", en: "Letter" }],
-            l3Words: ["घंटी", "लंगूर", "पंखा", "हंस", "चंदा", "शंख", "ठठेरा", "बंदर", "सुंदर", "अंदर", "तंबूरा", "संतरी", "हँसिया", "संगीत", "दुख", "खंजर", "चंपक", "रंक", "जंजीर", "ठंडा", "संकट", "नंदन", "नंबर", "संगत", "पंडित", "मंजरी", "अंबर", "अंगूर", "पंकज", "संगमरमर", "अंतःपुर", "अतः", "लोबिया", "पेठा", "परवल", "कटहल", "शलजम", "टिंडे"]
+            l3Words: ["घंटी", "लंगूर", "पंखा", "हंस", "चंदा", "शंख", "ठठेरा", "बंदर", "सुंदर", "अंदर", "तंबूरा", "संतरी", "संगीत", "दुःख", "खंजर", "चंपक", "रंक", "जंजीर", "ठंडा", "संकट", "नंदन", "नंबर", "संगत", "पंडित", "मंजरी", "अंबर", "अंगूर", "पंकज", "संगमरमर", "अंतःपुर", "अतः", "लोबिया", "पेठा", "परवल", "कटहल", "शलजम", "टिंडे"]
         },
         "8": { 
             words: [{ img: "gamla.jpg", hi: "गमला", en: "Pot" }, { img: "khilauna.jpg", hi: "खिलौना", en: "Toy" }, { img: "angoothi.jpg", hi: "अंगूठी", en: "Ring" }, { img: "choodiyan.jpg", hi: "चूड़ियाँ", en: "Bangles" }, { img: "uphaar.jpg", hi: "उपहार", en: "Gift" }, { img: "mithaiyan.jpg", hi: "मिठाइयाँ", en: "Sweets" }],
