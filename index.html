@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hindi Vocabulary Master</title>
     
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("Bug Caught! Message: " + message + "\nLine: " + lineno);
+            return false;
+        };
+    </script>
+
     <style>
         * { box-sizing: border-box; touch-action: manipulation; }
         body { 
@@ -379,7 +386,7 @@
         "animals": { 
             words: [{ img: "bagh.jpg", hi: "बाघ", en: "Tiger" }, { img: "hathi.jpg", hi: "हाथी", en: "Elephant" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "khargosh.jpg", hi: "खरगोश", en: "Rabbit" }, { img: "bhains.jpg", hi: "भैंस", en: "Buffalo" }, { img: "gadha.jpg", hi: "गधा", en: "Donkey" }, { img: "kauva.jpg", hi: "कौआ", en: "Crow" }, { img: "kabutar.jpg", hi: "कबूतर", en: "Pigeon" }, { img: "tota.jpg", hi: "तोता", en: "Parrot" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gauraiya.jpg", hi: "गौरैया", en: "Sparrow" }, { img: "cheel.jpg", hi: "चील", en: "Eagle" }],
             l3Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"],
-            l5Words: ["बा बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"]
+            l5Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"]
         },
         "veggies": { 
             words: [{ img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "pyaj.jpg", hi: "प्याज", en: "Onion" }, { img: "mirch.jpg", hi: "मिर्च", en: "Chili" }, { img: "tamatar.jpg", hi: "टमाटर", en: "Tomato" }, { img: "turai.jpg", hi: "तुरई", en: "Ridge Gourd" }, { img: "baingan.jpg", hi: "बैंगन", en: "Brinjal" }, { img: "matar.jpg", hi: "मटर", en: "Peas" }, { img: "bhindi.jpg", hi: "भिंडी", en: "Okra" }, { img: "lauki.jpg", hi: "लौकी", en: "Bottle Gourd" }, { img: "adrak.jpg", hi: "अदरक", en: "Ginger" }, { img: "sem.jpg", hi: "सेम", en: "Beans" }, { img: "kakdi.jpg", hi: "ककड़ी", en: "Cucumber" }, { img: "karela.jpg", hi: "करेला", en: "Bitter Gourd" }, { img: "kundru.jpg", hi: "कुंदरू", en: "Ivy Gourd" }, { img: "chichinda.jpg", hi: "चिचिंडा", en: "Snake Gourd" }, { img: "shakarkand.jpg", hi: "शकरकंद", en: "Sweet Potato" }, { img: "phoolgobhi.jpg", hi: "फूल गोभी", en: "Cauliflower" }, { img: "bandgobhi.jpg", hi: "बंद गोभी", en: "Cabbage" }, { img: "sahjan.jpg", hi: "सहजन", en: "Drumstick" }, { img: "gajar.jpg", hi: "गाजर", en: "Carrot" }, { img: "palak.jpg", hi: "पालक", en: "Spinach" }, { img: "chaulai.jpg", hi: "चौलाई", en: "Amaranth" }, { img: "haridhaniya.jpg", hi: "हरी धनिया", en: "Coriander" }, { img: "meethaneem.jpg", hi: "मीठा नीम", en: "Curry Leaves" }, { img: "lahsun.jpg", hi: "लहसुन", en: "Garlic" }, { img: "kumhada.jpg", hi: "कुम्हड़ा", en: "Pumpkin" }, { img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "lobiya.jpg", hi: "लोबिया", en: "Black-eyed Peas"}, { img: "petha.jpg", hi: "पेठा", en: "Ash Gourd"}, { img: "parwal.jpg", hi: "परवल", en: "Pointed Gourd"}, { img: "kathal.jpg", hi: "कटहल", en: "Jackfruit"}, { img: "shaljam.jpg", hi: "शलजम", en: "Turnip"}, { img: "tinde.jpg", hi: "टिंडे", en: "Apple Gourd"}],
@@ -967,15 +974,15 @@
         fText.innerText = l3ActiveTarget[0];
         overlay.style.display = "flex";
 
-        // Reset and trigger the 2-second shrinking bar animation
+        // Trigger the 0.75-second shrinking bar animation
         fBar.style.animation = 'none';
         void fBar.offsetWidth; // Trigger reflow to restart CSS animation
-        fBar.style.animation = 'shrink 2s linear forwards';
+        fBar.style.animation = 'shrink 0.75s linear forwards';
 
-        // Hide overlay exactly when the bar finishes shrinking
+        // Hide overlay exactly when the bar finishes shrinking (750 milliseconds)
         setTimeout(function() {
             overlay.style.display = "none";
-        }, 2000);
+        }, 750);
     }
 
     window.onload = function() { 
