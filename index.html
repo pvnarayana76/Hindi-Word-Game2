@@ -69,7 +69,7 @@
         .action-btn { color: white; border: none; font-size: clamp(18px, 4vmin, 24px); height: 8vh; padding: 0 2vw; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.1s; }
         .action-btn:active { transform: translateY(3px); }
         #l3-backspace { background: #757575; box-shadow: 0 4px 0 #424242; }
-        #l4-submit-btn { background: #1976d2; box-shadow: 0 4px 0 #0d47a1; display: none; }
+        #l3-submit-btn { background: #1976d2; box-shadow: 0 4px 0 #0d47a1; display: none; }
         #l5-listen-btn { background: #9c27b0; box-shadow: 0 4px 0 #6a1b9a; font-size: clamp(20px, 5vmin, 30px); padding: 15px 30px; display: none; animation: pulse 2s infinite; border-radius: 15px;}
         
         .finish-btn-style { background: #ff9800; box-shadow: 0 4px 0 #e65100; font-size: clamp(14px, 2.5vmin, 18px); padding: 8px 20px; position: absolute; top: 10px; right: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.1s; z-index: 10;}
@@ -223,7 +223,7 @@
             
             <div class="l3-workbench-area">
                 <div id="l3-workbench"></div>
-                <button id="l4-submit-btn" class="action-btn" onclick="l4SubmitWord()">✓</button>
+                <button id="l3-submit-btn" class="action-btn" onclick="l3SubmitWord()">✓</button>
                 <button id="l3-backspace" class="action-btn" onclick="l3Backspace()">⌫</button>
             </div>
             <div id="l3-status-message" style="height:20px; font-weight:bold; color:#d32f2f; font-size:16px;"></div>
@@ -287,6 +287,7 @@
     function resetTimer() { pauseTimer(); timerSeconds = 0; document.getElementById("timer-display").innerText = "⏱️ 00:00"; }
 
     function segmentHindi(text) { 
+        if (!text) return [];
         let rawTiles = text.match(/(?:[\u0915-\u0939\u0958-\u095f]\u094d)+[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|./g) || [];
         return rawTiles.filter(t => t.trim() !== ''); 
     }
@@ -381,15 +382,42 @@
     let l12Completed = []; 
     let l3InputText = "";
 
-    function shuffleArray(a) { let s = [...a]; for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; } return s; }
+    // 100% Compatible Array Shuffler
+    function shuffleArray(a) { 
+        let s = [].concat(a); 
+        for (let i = s.length - 1; i > 0; i--) { 
+            const j = Math.floor(Math.random() * (i + 1)); 
+            let temp = s[i]; s[i] = s[j]; s[j] = temp; 
+        } 
+        return s; 
+    }
 
     function getDecoyPool(lessonKey) {
         let pool = [];
         for (let key of lessonOrder) {
             if (keyboardData[key]) pool = pool.concat(keyboardData[key].c).concat(keyboardData[key].v);
-            if (key.toString() === lessonKey?.toString()) break;
+            let checkKey = lessonKey ? lessonKey.toString() : "";
+            if (key.toString() === checkKey) break;
         }
         return pool.length > 0 ? pool : ['क','ल','म','न','र','स'];
+    }
+
+    // --- PROGRESSIVE SORTING LOGIC (SIMPLE TO COMPLEX) ---
+    function getProgressiveWordList(wordSource) {
+        if (!wordSource) return [];
+        let grouped = {};
+        wordSource.forEach(w => {
+            if (!w) return;
+            let len = segmentHindi(w).length; 
+            if (!grouped[len]) grouped[len] = [];
+            grouped[len].push(w);
+        });
+        
+        let sortedList = [];
+        Object.keys(grouped).map(Number).sort((a,b) => a - b).forEach(len => {
+            sortedList = sortedList.concat(shuffleArray(grouped[len]));
+        });
+        return sortedList;
     }
 
     // ==========================================
@@ -414,9 +442,9 @@
             
             buildL3Keyboard(lesson);
             
-            // Choose dictation vs reading words based on level
             let wordSource = (level === "5") ? [...lessonsData[lesson].l5Words] : [...lessonsData[lesson].l3Words];
-            l3AllWords = shuffleArray(wordSource);
+            l3AllWords = getProgressiveWordList(wordSource);
+            
             l3ActiveTarget = [];
             l3Completed = [];
             l3InputText = "";
@@ -425,19 +453,23 @@
             
             const titleTarget = document.getElementById("l3-target-title");
             const wordsTarget = document.getElementById("l3-target-words");
-            const btnSubmit = document.getElementById("l4-submit-btn");
+            const btnSubmit = document.getElementById("l3-submit-btn");
             const btnListen = document.getElementById("l5-listen-btn");
             const btnFinish = document.getElementById("l5-finish-btn");
             
+            // Show submit button for Levels 3, 4, AND 5
+            btnSubmit.style.display = "block";
+            
             if (level === "3") {
                 titleTarget.style.display = "block"; wordsTarget.style.display = "block";
-                btnSubmit.style.display = "none"; btnListen.style.display = "none"; btnFinish.style.display = "none";
+                btnListen.style.display = "none"; btnFinish.style.display = "none";
             } else if (level === "4") {
-                titleTarget.style.display = "none"; wordsTarget.style.display = "none";
-                btnSubmit.style.display = "block"; btnListen.style.display = "none"; btnFinish.style.display = "none";
+                titleTarget.style.display = "none"; 
+                wordsTarget.style.display = "block"; // Keep block to show the new instructions!
+                btnListen.style.display = "none"; btnFinish.style.display = "none";
             } else if (level === "5") {
                 titleTarget.style.display = "none"; wordsTarget.style.display = "none";
-                btnSubmit.style.display = "none"; btnListen.style.display = "inline-block"; btnFinish.style.display = "block";
+                btnListen.style.display = "inline-block"; btnFinish.style.display = "block";
             }
             
             loadNextL3Batch();
@@ -685,6 +717,7 @@
         const cBox = document.getElementById("l3-completed-words");
         
         tBox.innerHTML = "";
+        
         if (level === "3") {
             l3ActiveTarget.forEach(w => {
                 let span = document.createElement("span");
@@ -692,6 +725,9 @@
                 span.innerText = w;
                 tBox.appendChild(span);
             });
+        } else if (level === "4") {
+            // Level 4 Instructional Text Fix
+            tBox.innerHTML = "<div style='color:#1976d2; font-size:clamp(16px, 3vmin, 22px); padding:10px; text-align:center;'>बाएँ दिए गए अक्षरों से शब्द बनाएँ<br><small style='color:#555;'>(Make words from the letters on the left)</small></div>";
         }
         
         cBox.innerHTML = "";
@@ -710,12 +746,9 @@
 
     function l3KeyPress(char) {
         document.getElementById("l3-status-message").innerText = "";
-        l3InputText += char;
-        renderL3Board();
-        
-        const level = document.getElementById("level-select").value;
-        if (level === "3" || level === "5") {
-            checkL3Match();
+        if (l3InputText.length < 15) { 
+            l3InputText += char;
+            renderL3Board();
         }
     }
 
@@ -760,44 +793,52 @@
         }, 500);
     }
 
-    function checkL3Match() {
-        const matchIndex = l3ActiveTarget.indexOf(l3InputText);
-        const level = document.getElementById("level-select").value;
-        
-        if (matchIndex !== -1) {
-            const matchedWord = l3ActiveTarget[matchIndex];
-            l3ActiveTarget.splice(matchIndex, 1);
-            l3Completed.push(matchedWord);
-            
-            if (!solvedWordsGlobal.has(matchedWord)) {
-                currentMarks += (level === "5" ? 5 : 3);
-                solvedWordsGlobal.add(matchedWord);
-                document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
-            }
-            flashL3Success();
-        }
-    }
-
-    function l4SubmitWord() {
+    // --- MANUAL SUBMIT FOR ALL LEVELS ---
+    function l3SubmitWord() {
         const word = l3InputText.trim();
-        const currentLesson = document.getElementById("lesson-select").value;
         if (!word) return;
 
-        if (lessonsData[currentLesson].l3Words.includes(word)) {
-            if (l3Completed.includes(word)) {
-                document.getElementById("l3-status-message").innerText = "पहले ही बना लिया! (Already built)";
-                return;
+        const level = document.getElementById("level-select").value;
+        const currentLesson = document.getElementById("lesson-select").value;
+
+        if (level === "3" || level === "5") {
+            const matchIndex = l3ActiveTarget.indexOf(word);
+            if (matchIndex !== -1) {
+                const matchedWord = l3ActiveTarget[matchIndex];
+                l3ActiveTarget.splice(matchIndex, 1);
+                l3Completed.push(matchedWord);
+                
+                if (!solvedWordsGlobal.has(matchedWord)) {
+                    currentMarks += (level === "5" ? 5 : 3);
+                    solvedWordsGlobal.add(matchedWord);
+                    document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
+                }
+                flashL3Success(false);
+            } else {
+                wrongSound.play().catch(e => console.log(e));
+                if (level === "3") {
+                    document.getElementById("l3-status-message").innerText = "❌ यह शब्द ऊपर नहीं है (Not in visible list)";
+                } else {
+                    document.getElementById("l3-status-message").innerText = "❌ गलत शब्द (Wrong word)";
+                }
             }
-            l3Completed.push(word);
-            if (!solvedWordsGlobal.has(word)) {
-                currentMarks += 4;
-                solvedWordsGlobal.add(word);
-                document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
+        } else if (level === "4") {
+            if (lessonsData[currentLesson].l3Words.includes(word)) {
+                if (l3Completed.includes(word)) {
+                    document.getElementById("l3-status-message").innerText = "पहले ही बना लिया! (Already built)";
+                    return;
+                }
+                l3Completed.push(word);
+                if (!solvedWordsGlobal.has(word)) {
+                    currentMarks += 4;
+                    solvedWordsGlobal.add(word);
+                    document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
+                }
+                flashL3Success(true);
+            } else {
+                wrongSound.play().catch(e => console.log(e));
+                document.getElementById("l3-status-message").innerText = "❌ सही शब्द नहीं है (Not a valid word)";
             }
-            flashL3Success(true);
-        } else {
-            wrongSound.play().catch(e => console.log(e));
-            document.getElementById("l3-status-message").innerText = "❌ सही शब्द नहीं है (Not a valid word)";
         }
     }
 
@@ -811,10 +852,8 @@
         const vSelect = document.getElementById("voice-select");
         const hindiFound = voices.some(v => v.lang.includes('hi'));
         
-        // Only populate if empty
         if (vSelect.options.length <= 1) {
             voices.forEach((v, i) => {
-                // FILTER: Only show Hindi voices
                 if (v.lang.includes('hi')) {
                     const opt = document.createElement("option");
                     opt.value = i; 
@@ -829,7 +868,6 @@
             document.getElementById("pronounce-btn").disabled = false;
             document.getElementById("voice-debug").innerText = "Hindi voice ready! ✔️";
             
-            // AUTO-SELECT the first available Hindi voice
             if (vSelect.options.length > 1 && vSelect.value === "") {
                 vSelect.selectedIndex = 1;
                 manualVoiceSet();
