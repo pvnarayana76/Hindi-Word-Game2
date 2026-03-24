@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hindi Vocabulary Master</title>
     
-    <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            alert("Bug Caught! Message: " + message + "\nLine: " + lineno);
-            return false;
-        };
-    </script>
-
     <style>
         * { box-sizing: border-box; touch-action: manipulation; }
         body { 
@@ -78,7 +71,9 @@
         .action-btn:active { transform: translateY(3px); }
         #l3-backspace { background: #757575; box-shadow: 0 4px 0 #424242; }
         #l3-submit-btn { background: #1976d2; box-shadow: 0 4px 0 #0d47a1; display: none; }
-        #l5-listen-btn { background: #9c27b0; box-shadow: 0 4px 0 #6a1b9a; font-size: clamp(20px, 5vmin, 30px); padding: 15px 30px; display: none; animation: pulse 2s infinite; border-radius: 15px;}
+        
+        #l5-listen-btn { background: #9c27b0; box-shadow: 0 4px 0 #6a1b9a; font-size: clamp(18px, 4vmin, 24px); padding: 10px 20px; display: none; animation: pulse 2s infinite; border-radius: 12px;}
+        #l5-hint-btn { background: #ffb300; box-shadow: 0 4px 0 #fb8c00; font-size: clamp(18px, 4vmin, 24px); padding: 10px 20px; display: none; border-radius: 12px; color: #333;}
         
         .finish-btn-style { background: #ff9800; box-shadow: 0 4px 0 #e65100; font-size: clamp(14px, 2.5vmin, 18px); padding: 8px 20px; position: absolute; top: 10px; right: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.1s; z-index: 10;}
         .finish-btn-style:active { transform: translateY(3px); box-shadow: 0 1px 0 #e65100; }
@@ -113,6 +108,17 @@
         .btn-yes { background: #34a853; }
         .btn-no { background: #d32f2f; }
         .btn-play { background: #1976d2; }
+
+        /* FLASH HINT OVERLAY (Level 5) */
+        #flash-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center;
+            z-index: 2000; border-radius: 15px; flex-direction: column;
+        }
+        .flash-word { font-size: clamp(60px, 15vmin, 120px); color: #fff; font-weight: bold; text-shadow: 0 0 20px #ffeb3b; letter-spacing: 2px;}
+        .flash-timer { width: 60%; height: 12px; background: #555; border-radius: 6px; margin-top: 30px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);}
+        .flash-progress { width: 100%; height: 100%; background: #ffeb3b; }
+        @keyframes shrink { from { width: 100%; } to { width: 0%; } }
 
         /* PORTRAIT MODE OVERRIDE */
         @media (orientation: portrait) {
@@ -226,7 +232,10 @@
             <div id="l3-target-container" class="l3-box l3-target-box">
                 <div id="l3-target-title" class="l3-title">इन शब्दों को बनाइए (Target Words):</div>
                 <div id="l3-target-words"></div>
-                <button id="l5-listen-btn" class="action-btn" onclick="pronounceL5Word()">🔊 सुनें (Listen)</button>
+                <div style="display:flex; gap:10px; justify-content:center; width:100%; margin-top:5px;">
+                    <button id="l5-listen-btn" class="action-btn" onclick="pronounceL5Word()">🔊 सुनें (Listen)</button>
+                    <button id="l5-hint-btn" class="action-btn hint-btn" onclick="flashHint()">💡 संकेत (Hint)</button>
+                </div>
             </div>
             
             <div class="l3-workbench-area">
@@ -270,6 +279,12 @@
         <div id="final-time-text" style="font-size: clamp(20px, 5vmin, 30px); font-weight: bold; color: #1976d2; margin-bottom: 40px;">Total Time: 00:00</div>
         <button class="overlay-btn btn-play" onclick="closeSummaryAndReset()">Play Again (फिर से खेलें)</button>
     </div>
+
+    <div id="flash-overlay">
+        <div id="flash-text" class="flash-word"></div>
+        <div class="flash-timer"><div id="flash-bar" class="flash-progress"></div></div>
+    </div>
+
 </div>
 
 <script>
@@ -364,7 +379,7 @@
         "animals": { 
             words: [{ img: "bagh.jpg", hi: "बाघ", en: "Tiger" }, { img: "hathi.jpg", hi: "हाथी", en: "Elephant" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "khargosh.jpg", hi: "खरगोश", en: "Rabbit" }, { img: "bhains.jpg", hi: "भैंस", en: "Buffalo" }, { img: "gadha.jpg", hi: "गधा", en: "Donkey" }, { img: "kauva.jpg", hi: "कौआ", en: "Crow" }, { img: "kabutar.jpg", hi: "कबूतर", en: "Pigeon" }, { img: "tota.jpg", hi: "तोता", en: "Parrot" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gauraiya.jpg", hi: "गौरैया", en: "Sparrow" }, { img: "cheel.jpg", hi: "चील", en: "Eagle" }],
             l3Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"],
-            l5Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"]
+            l5Words: ["बा बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"]
         },
         "veggies": { 
             words: [{ img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "pyaj.jpg", hi: "प्याज", en: "Onion" }, { img: "mirch.jpg", hi: "मिर्च", en: "Chili" }, { img: "tamatar.jpg", hi: "टमाटर", en: "Tomato" }, { img: "turai.jpg", hi: "तुरई", en: "Ridge Gourd" }, { img: "baingan.jpg", hi: "बैंगन", en: "Brinjal" }, { img: "matar.jpg", hi: "मटर", en: "Peas" }, { img: "bhindi.jpg", hi: "भिंडी", en: "Okra" }, { img: "lauki.jpg", hi: "लौकी", en: "Bottle Gourd" }, { img: "adrak.jpg", hi: "अदरक", en: "Ginger" }, { img: "sem.jpg", hi: "सेम", en: "Beans" }, { img: "kakdi.jpg", hi: "ककड़ी", en: "Cucumber" }, { img: "karela.jpg", hi: "करेला", en: "Bitter Gourd" }, { img: "kundru.jpg", hi: "कुंदरू", en: "Ivy Gourd" }, { img: "chichinda.jpg", hi: "चिचिंडा", en: "Snake Gourd" }, { img: "shakarkand.jpg", hi: "शकरकंद", en: "Sweet Potato" }, { img: "phoolgobhi.jpg", hi: "फूल गोभी", en: "Cauliflower" }, { img: "bandgobhi.jpg", hi: "बंद गोभी", en: "Cabbage" }, { img: "sahjan.jpg", hi: "सहजन", en: "Drumstick" }, { img: "gajar.jpg", hi: "गाजर", en: "Carrot" }, { img: "palak.jpg", hi: "पालक", en: "Spinach" }, { img: "chaulai.jpg", hi: "चौलाई", en: "Amaranth" }, { img: "haridhaniya.jpg", hi: "हरी धनिया", en: "Coriander" }, { img: "meethaneem.jpg", hi: "मीठा नीम", en: "Curry Leaves" }, { img: "lahsun.jpg", hi: "लहसुन", en: "Garlic" }, { img: "kumhada.jpg", hi: "कुम्हड़ा", en: "Pumpkin" }, { img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "lobiya.jpg", hi: "लोबिया", en: "Black-eyed Peas"}, { img: "petha.jpg", hi: "पेठा", en: "Ash Gourd"}, { img: "parwal.jpg", hi: "परवल", en: "Pointed Gourd"}, { img: "kathal.jpg", hi: "कटहल", en: "Jackfruit"}, { img: "shaljam.jpg", hi: "शलजम", en: "Turnip"}, { img: "tinde.jpg", hi: "टिंडे", en: "Apple Gourd"}],
@@ -476,20 +491,21 @@
             var wordsTarget = document.getElementById("l3-target-words");
             var btnSubmit = document.getElementById("l3-submit-btn");
             var btnListen = document.getElementById("l5-listen-btn");
+            var btnHint = document.getElementById("l5-hint-btn");
             var btnFinish = document.getElementById("l5-finish-btn");
             
             btnSubmit.style.display = "block";
             
             if (level === "3") {
                 titleTarget.style.display = "block"; wordsTarget.style.display = "block";
-                btnListen.style.display = "none"; btnFinish.style.display = "none";
+                btnListen.style.display = "none"; btnHint.style.display = "none"; btnFinish.style.display = "none";
             } else if (level === "4") {
                 titleTarget.style.display = "none"; 
                 wordsTarget.style.display = "block"; 
-                btnListen.style.display = "none"; btnFinish.style.display = "none";
+                btnListen.style.display = "none"; btnHint.style.display = "none"; btnFinish.style.display = "none";
             } else if (level === "5") {
                 titleTarget.style.display = "none"; wordsTarget.style.display = "none";
-                btnListen.style.display = "inline-block"; btnFinish.style.display = "block";
+                btnListen.style.display = "inline-block"; btnHint.style.display = "inline-block"; btnFinish.style.display = "block";
             }
             
             loadNextL3Batch();
@@ -939,6 +955,27 @@
             if (manualVoice) { u.voice = manualVoice; } else { u.lang = 'hi-IN'; }
             u.rate = 0.8; synth.speak(u);
         }
+    }
+
+    // --- FLASH HINT LOGIC (LEVEL 5) ---
+    function flashHint() {
+        if (l3ActiveTarget.length === 0) return;
+        var overlay = document.getElementById("flash-overlay");
+        var fText = document.getElementById("flash-text");
+        var fBar = document.getElementById("flash-bar");
+
+        fText.innerText = l3ActiveTarget[0];
+        overlay.style.display = "flex";
+
+        // Reset and trigger the 2-second shrinking bar animation
+        fBar.style.animation = 'none';
+        void fBar.offsetWidth; // Trigger reflow to restart CSS animation
+        fBar.style.animation = 'shrink 2s linear forwards';
+
+        // Hide overlay exactly when the bar finishes shrinking
+        setTimeout(function() {
+            overlay.style.display = "none";
+        }, 2000);
     }
 
     window.onload = function() { 
