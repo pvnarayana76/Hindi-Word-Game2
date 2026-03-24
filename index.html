@@ -58,4 +58,564 @@
         
         .l3-board-section { flex: 0.55; display: flex; flex-direction: column; gap: 1.5vh; justify-content: space-between; }
         .l3-box { background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 1.5vh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 12vh; position: relative;}
-        .l3-
+        .l3-target-box { border-color: #90caf9; background: #e3f2fd; }
+        .l3-completed-box { border-color: #a5d6a7; background: #e8f5e9; flex:1; align-items: stretch;}
+        .l3-title { font-size: 14px; font-weight: bold; color: #555; margin-bottom: 5px; width:100%; text-align:left;}
+        .l3-word-pill { background: white; border: 2px solid #ccc; padding: 5px 15px; border-radius: 20px; font-size: clamp(18px, 4vmin, 26px); font-weight: bold; margin: 4px; display: inline-block; }
+        .l3-workbench-area { display: flex; gap: 10px; width: 100%; align-items: center; justify-content: center; }
+        #l3-workbench { background: white; border: 3px dashed #bbb; font-size: clamp(24px, 6vmin, 40px); font-weight: bold; height: 8vh; width: 70%; border-radius: 12px; display: flex; align-items: center; justify-content: center; color:#d32f2f;}
+        
+        /* Action Buttons */
+        .action-btn { color: white; border: none; font-size: clamp(18px, 4vmin, 24px); height: 8vh; padding: 0 2vw; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.1s; }
+        .action-btn:active { transform: translateY(3px); }
+        #l3-backspace { background: #757575; box-shadow: 0 4px 0 #424242; }
+        #l3-submit-btn { background: #1976d2; box-shadow: 0 4px 0 #0d47a1; display: none; }
+        #l5-listen-btn { background: #9c27b0; box-shadow: 0 4px 0 #6a1b9a; font-size: clamp(20px, 5vmin, 30px); padding: 15px 30px; display: none; animation: pulse 2s infinite; border-radius: 15px;}
+        
+        .finish-btn-style { background: #ff9800; box-shadow: 0 4px 0 #e65100; font-size: clamp(14px, 2.5vmin, 18px); padding: 8px 20px; position: absolute; top: 10px; right: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.1s; z-index: 10;}
+        .finish-btn-style:active { transform: translateY(3px); box-shadow: 0 1px 0 #e65100; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* CONTROLS */
+        .controls { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 40px; }
+        button { color: white; border: none; padding: 1.2vh 2vw; font-size: clamp(12px, 2vmin, 16px); font-weight: bold; cursor: pointer; border-radius: 8px; }
+        #back-btn { background: #607d8b; display: none; }
+        #clear-btn { background: #f4b400; display: none; } 
+        #skip-btn { background: #9c27b0; display: none; }
+        #pronounce-btn { background: #1a73e8; display: none; } 
+        #next-btn { background: #34a853; display: none; }
+
+        #status-message { height: 25px; font-size: clamp(16px, 3vmin, 22px); font-weight: bold; text-align: center; width: 100%; transition: 0.2s;}
+
+        /* STATS & OVERLAYS */
+        .stats-container { width: 100%; display: flex; flex-direction: column; align-items: center; border-top: 2px solid #eee; padding-top: 1vh; margin-top: auto;}
+        .stats { width: 100%; display: flex; justify-content: space-around; align-items: center; font-size: clamp(13px, 2.5vmin, 18px); font-weight: bold; gap: 5px; }
+        #marks-display { color: #d32f2f; background: #ffebee; padding: 5px 12px; border-radius: 8px; }
+        #timer-display { color: #1976d2; background: #e3f2fd; padding: 5px 12px; border-radius: 8px; }
+        #voice-debug { font-size: 11px; color: #888; margin-top: 0.5vh; }
+        
+        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #e91e63; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; position: absolute; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.97); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; border-radius: 15px;}
+        .overlay-title { font-size: clamp(24px, 6vmin, 40px); color: #2e7d32; font-weight: bold; text-align: center; padding: 10px;}
+        .overlay-btn { font-size: 20px; font-weight: bold; padding: 12px 30px; border-radius: 10px; cursor: pointer; border: none; color: white; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2);}
+        .overlay-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2);}
+        .btn-yes { background: #34a853; }
+        .btn-no { background: #d32f2f; }
+        .btn-play { background: #1976d2; }
+
+        /* PORTRAIT MODE OVERRIDE */
+        @media (orientation: portrait) {
+            #game-board { padding: 1vh 2vw; }
+            .header-controls { margin-bottom: 1vh; }
+            .main-responsive-area, .l3-view { flex-direction: column; gap: 1vh; } 
+            .left-half { flex: 0 0 30%; padding: 0.5vh; border-radius: 10px; } 
+            .right-half { flex: 1; justify-content: flex-start; }
+            .game-area { gap: 1vh; }
+            #answer-box, #scrambled-box { min-height: 8vh; padding: 1vh; gap: 6px; } 
+            .letter-tile { padding: 1vh 3vw; font-size: clamp(18px, 5vmin, 35px); }
+            button { padding: 1.2vh 3vw; }
+            .stats-container { padding-top: 0.5vh; }
+            
+            .l3-keyboard-section { flex: 0 0 35%; padding: 1vh;}
+            .l3-board-section { flex: 1; justify-content: flex-start;}
+            .l3-box { min-height: 8vh; padding: 1vh;}
+            .l3-key { padding: 1vh 4vw; font-size: 22px;}
+            #l3-workbench { height: 7vh; font-size: 28px;}
+            .action-btn { height: 7vh; padding: 0 4vw;}
+        }
+
+        /* EXTREME LANDSCAPE OVERRIDE */
+        @media (max-height: 450px) and (orientation: landscape) {
+            #game-board { padding: 1vh 1vw; }
+            .header-controls { margin-bottom: 1vh; }
+            .left-half { padding: 0.5vh; }
+            .game-area { gap: 1vh; }
+            #answer-box, #scrambled-box { min-height: 8vh; padding: 0.5vh; }
+            .letter-tile { font-size: 18px; padding: 1vh 1.5vw; box-shadow: 0 3px 0 #ad1457;}
+            button { padding: 1vh 1.5vw; font-size: 12px; }
+            .stats-container { padding-top: 0.5vh; }
+            .l3-keyboard-section { padding: 0.5vh;}
+            .l3-key { padding: 0.5vh 1.5vw; font-size: 18px;}
+            #l3-workbench { height: 6vh; font-size: 24px;}
+            .action-btn { height: 6vh;}
+            .finish-btn-style { padding: 4px 8px; font-size: 12px;}
+        }
+    </style>
+</head>
+<body onclick="kickstartSpeech()">
+
+<div id="game-board">
+    <div class="header-controls">
+        <select id="lesson-select" onchange="changeLesson()">
+            <option value="1">Lesson 1 (बारिश)</option>
+            <option value="2">Lesson 2 (तितली)</option>
+            <option value="3">Lesson 3 (ऊँट चला)</option>
+            <option value="4">Lesson 4 (मेरा देश महान है)</option>
+            <option value="5">Lesson 5 (मेरी बहना)</option>
+            <option value="6">Lesson 6 (खिलौनेवाला)</option>
+            <option value="7">Lesson 7 (तरकारी दरबार)</option>
+            <option value="8">Lesson 8 (दो मित्र)</option>
+            <option value="9">Lesson 9 (जन्मदिन)</option>
+            <option value="animals">पशु-पक्षी (Animals & Birds)</option>
+            <option value="veggies">साग-सब्ज़ी (Vegetables)</option>
+            <option value="flowers">फूल (Flowers)</option>
+        </select>
+        <select id="level-select" onchange="changeLesson()">
+            <option value="1">Level 1 (Learn)</option>
+            <option value="2">Level 2 (Challenge)</option>
+            <option value="3">Level 3 (Reading)</option>
+            <option value="4">Level 4 (Word Builder)</option>
+            <option value="5">Level 5 (Dictation)</option>
+        </select>
+        <select id="voice-select" onchange="manualVoiceSet()">
+            <option value="">Select Voice</option>
+        </select>
+        <button id="new-student-btn" onclick="restartForNewStudent()">🔄 Reset</button>
+    </div>
+    
+    <div id="l12-view" class="main-responsive-area">
+        <div class="left-half">
+            <div id="image-container">
+                <div id="loading-spinner" class="spinner"></div>
+                <img id="word-image" src="">
+                <div id="fallback-text"></div>
+            </div>
+        </div>
+
+        <div class="right-half">
+            <div class="game-area">
+                <div id="answer-box"></div>
+                <div id="scrambled-box"></div>
+                <div id="status-message"></div>
+                
+                <div class="controls">
+                    <button id="back-btn" onclick="prevWord()">⬅️ Back</button>
+                    <button id="clear-btn" onclick="clearAnswer()">Clear</button>
+                    <button id="skip-btn" onclick="skipWord()">Skip ⏭️</button>
+                    <button id="pronounce-btn" onclick="pronounceWord()">🔊 Speak</button>
+                    <button id="next-btn" onclick="nextWord()">Next ➡️</button>
+                </div>
+            </div>
+            
+            <div class="l3-box l3-completed-box" style="margin-bottom: 1.5vh; flex: 0.5; min-height: 12vh;">
+                <div class="l3-title">पूर्ण शब्द (Completed):</div>
+                <div id="l12-completed-words" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; align-content: flex-start; height: 100%; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="l3-view" class="l3-view">
+        <div class="l3-keyboard-section">
+            <div class="l3-title">स्वर और मात्राएँ (Vowels & Matras)</div>
+            <div id="l3-vowels-keys" class="l3-keys-container" style="margin-bottom: 10px;"></div>
+            <div class="l3-title">व्यंजन (Consonants)</div>
+            <div id="l3-cons-keys" class="l3-keys-container"></div>
+        </div>
+        <div class="l3-board-section">
+            <div id="l3-target-container" class="l3-box l3-target-box">
+                <div id="l3-target-title" class="l3-title">इन शब्दों को बनाइए (Target Words):</div>
+                <div id="l3-target-words"></div>
+                <button id="l5-listen-btn" class="action-btn" onclick="pronounceL5Word()">🔊 सुनें (Listen)</button>
+            </div>
+            
+            <div class="l3-workbench-area">
+                <div id="l3-workbench"></div>
+                <button id="l3-submit-btn" class="action-btn" onclick="l3SubmitWord()">✓</button>
+                <button id="l3-backspace" class="action-btn" onclick="l3Backspace()">⌫</button>
+            </div>
+            <div id="l3-status-message" style="height:20px; font-weight:bold; color:#d32f2f; font-size:16px;"></div>
+
+            <div class="l3-box l3-completed-box">
+                <button id="l5-finish-btn" class="finish-btn-style" onclick="triggerLessonComplete()" style="display:none;">🏁 समाप्त करें (Finish)</button>
+                <div class="l3-title">पूर्ण शब्द (Completed):</div>
+                <div id="l3-completed-words" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; align-content: flex-start; height: 100%; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stats">
+            <div id="word-count">0 / 0</div>
+            <div id="timer-display">⏱️ 00:00</div>
+            <div id="marks-display">Marks: 0</div>
+        </div>
+        <div id="voice-debug">Click anywhere to wake audio.</div>
+    </div>
+
+    <div id="end-lesson-overlay" class="overlay">
+        <div style="font-size: 60px;">🎉</div>
+        <div id="end-lesson-text" class="overlay-title">Lesson Completed!</div>
+        <div style="margin-top: 15px; font-size: clamp(16px, 4vmin, 24px); color: #444; font-weight: bold; text-align: center;">Do you want to continue to the next lesson?<br>(क्या आप अगले पाठ पर जाना चाहते हैं?)</div>
+        <div style="margin-top: 30px; display: flex; gap: 20px;">
+            <button class="overlay-btn btn-yes" onclick="continueToNextLesson()">Yes (हाँ)</button>
+            <button class="overlay-btn btn-no" onclick="showFinalSummary()">No (नहीं)</button>
+        </div>
+    </div>
+
+    <div id="summary-overlay" class="overlay">
+        <div style="font-size: 80px;">🏆</div>
+        <div style="font-size: clamp(30px, 6vmin, 50px); color: #1976d2; font-weight: bold; margin: 20px 0;">Congratulations!</div>
+        <div id="final-score-text" style="font-size: clamp(20px, 5vmin, 30px); font-weight: bold; color: #d32f2f; margin-bottom: 10px;">Total Marks: 0</div>
+        <div id="final-time-text" style="font-size: clamp(20px, 5vmin, 30px); font-weight: bold; color: #1976d2; margin-bottom: 40px;">Total Time: 00:00</div>
+        <button class="overlay-btn btn-play" onclick="closeSummaryAndReset()">Play Again (फिर से खेलें)</button>
+    </div>
+</div>
+
+<script>
+    const clapSound = new Audio('applause.mp3'); 
+    const wrongSound = new Audio('wrong.mp3');
+
+    // --- SMART TIMER LOGIC ---
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            let h = Math.floor(timerSeconds / 3600);
+            let m = Math.floor((timerSeconds % 3600) / 60);
+            let s = timerSeconds % 60;
+            let display = (h > 0 ? (h < 10 ? "0" + h : h) + ":" : "") + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+            document.getElementById("timer-display").innerText = "⏱️ " + display;
+        }, 1000);
+    }
+    function pauseTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+    function resetTimer() { pauseTimer(); timerSeconds = 0; document.getElementById("timer-display").innerText = "⏱️ 00:00"; }
+
+    // Accurately counts Hindi syllables/blocks for our difficulty sorter
+    function segmentHindi(text) { 
+        if (!text) return [];
+        let rawTiles = text.match(/(?:[\u0915-\u0939\u0958-\u095f]\u094d)+[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|[\u0900-\u097f][\u0900-\u0903\u093a-\u094c\u094e\u094f\u0955-\u0957\u0962\u0963]*|./g) || [];
+        return rawTiles.filter(t => t.trim() !== ''); 
+    }
+
+    // --- CURRICULUM DATA ---
+    const lessonOrder = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "animals", "veggies", "flowers"];
+
+    const keyboardData = {
+        "1": { v: ['अ', 'आ', 'ा'], c: ['न', 'म', 'र'] },
+        "2": { v: ['इ', 'ई', 'ि', 'ी'], c: ['क', 'ख', 'ल', 'स'] },
+        "3": { v: ['उ', 'ऊ', 'ु', 'ू'], c: ['घ', 'च', 'छ', 'ट', 'ड', 'ड़'] },
+        "4": { v: ['ऋ', 'ृ'], c: ['ज', 'फ', 'ब', 'भ', 'ष'] },
+        "5": { v: ['ए', 'ऐ', 'े', 'ै'], c: ['ग', 'त', 'थ', 'ध', 'प'] },
+        "6": { v: ['ओ', 'औ', 'ो', 'ौ'], c: ['झ', 'श', 'ह', 'ण', 'य'] },
+        "7": { v: ['अं', 'अः', 'ं', 'ः', 'ँ'], c: ['द', 'ठ', 'ढ', 'व'] },
+        "8": { v: ['ॉ', '्'], c: ['क्ष', 'त्र', 'ज्ञ', 'श्र'] }, 
+        "9": { v: [], c: [] }, "animals": { v: [], c: [] }, "veggies": { v: [], c: [] }, "flowers": { v: [], c: [] }
+    };
+
+    const lessonsData = {
+        "1": { 
+            words: [{ img: "naman.jpg", hi: "नमन", en: "Greeting" }, { img: "aara.jpg", hi: "आरा", en: "Saw" }, { img: "anar.jpg", hi: "अनार", en: "Pomegranate" }, { img: "aam.jpg", hi: "आम", en: "Mango" }],
+            l3Words: ["नम", "नर", "नाम", "नारा", "अनार", "आम", "मामा", "नाना", "राम", "आराम", "नरम", "नार", "आना", "मरम", "नमन"],
+            l5Words: ["नम", "नर", "नाम", "नारा", "अनार", "आम", "मामा", "नाना", "राम", "आराम", "नरम", "नार", "आना", "मरम", "नमन"]
+        },
+        "2": { 
+            words: [{ img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "meen.jpg", hi: "मीन", en: "Fish" }, { img: "eekh.jpg", hi: "ईख", en: "Sugarcane" }, { img: "kisan.jpg", hi: "किसान", en: "Farmer" }, { img: "neem.jpg", hi: "नीम", en: "Neem" }, { img: "keela.jpg", hi: "कीला", en: "Nail" }, { img: "sir.jpg", hi: "सिर", en: "Head" }, { img: "kamal.jpg", hi: "कमल", en: "Lotus" }],
+            l3Words: ["सिर", "सिरा", "सिख", "सीख", "मिल", "मील", "किला", "कीला", "इमली", "मीन", "ईख", "किसान", "नीम", "कमल"],
+            l5Words: ["सिर", "सिरा", "सिख", "सीख", "मिल", "मील", "किला", "कीला", "इमली", "मीन", "ईख", "किसान", "नीम", "कमल"]
+        },
+        "3": { 
+            words: [{ img: "kusum.jpg", hi: "कुसुम", en: "Flower" }, { img: "mooli.jpg", hi: "मूली", en: "Radish" }, { img: "sui.jpg", hi: "सुई", en: "Needle" }, { img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "ladka.jpg", hi: "लड़का", en: "Boy" }, { img: "damaru.jpg", hi: "डमरू", en: "Drum" }, { img: "kachhua.jpg", hi: "कछुआ", en: "Turtle" }, { img: "choodi.jpg", hi: "चूड़ी", en: "Bangle" }, { img: "umara.jpg", hi: "उमरा", en: "Noble" }, { img: "oon.jpg", hi: "ऊन", en: "Wool" }, { img: "chaamar.jpg", hi: "चामर", en: "Fly-whisk" }, { img: "daali.jpg", hi: "डाली", en: "Branch" }, { img: "khidki.jpg", hi: "खिड़की", en: "Window" }],
+            l3Words: ["चुक", "चूक", "सुर", "सूर", "टुक", "टूक", "कुल", "कूल", "लुट", "लूट", "चुटकी", "खुर", "छुरी", "घूस", "घुटना", "टुकड़ा", "चूना", "खून", "डाकू", "रूमाल", "टिकट", "चूरन", "कुसुम", "मूली", "सुई", "आलू", "लड़का", "डमरू", "कछुआ", "चूड़ी", "उमरा", "ऊन", "चामर", "डाली", "खिड़की"],
+            l5Words: ["चुक", "चूक", "सुर", "सूर", "टुक", "टूक", "कुल", "कूल", "लुट", "लूट", "चुटकी", "खुर", "छुरी", "घूस", "घुटना", "टुकड़ा", "चूना", "खून", "डाकू", "रूमाल", "टिकट", "चूरन", "कुसुम", "मूली", "सुई", "आलू", "लड़का", "डमरू", "कछुआ", "चूड़ी", "उमरा", "ऊन", "चामर", "डाली", "खिड़की"]
+        },
+        "4": { 
+            words: [{ img: "faatak.jpg", hi: "फाटक", en: "Gate" }, { img: "jaal.jpg", hi: "जाल", en: "Net" }, { img: "bakri.jpg", hi: "बकरी", en: "Goat" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "shatbhuj.jpg", hi: "षटभुज", en: "Hexagon" }, { img: "rishabh.jpg", hi: "ऋषभ", en: "Ox" }, { img: "krishak.jpg", hi: "कृषक", en: "Farmer" }, { img: "rishi.jpg", hi: "ऋषि", en: "Sage" }],
+            l3Words: ["फाटक", "जाल", "बकरी", "भालू", "कृषक", "ऋषभ", "ऋषि", "भृकुटी", "बल", "बाल", "जल", "काम", "भर", "भार", "बस", "भाषा", "फीका", "भला", "फसल", "फूट", "भजन", "बकरा", "षडानन", "आईना", "जलज", "बाजरा", "फन", "षटभुज", "फल", "भट", "कमीज", "भूख", "जामुन", "भूमि", "फरक", "जलन", "जमीन", "बालटी"],
+            l5Words: ["फाटक", "जाल", "बकरी", "भालू", "कृषक", "ऋषभ", "ऋषि", "भृकुटी", "बल", "बाल", "जल", "काम", "भर", "भार", "बस", "भाषा", "फीका", "भला", "फसल", "फूट", "भजन", "बकरा", "षडानन", "आईना", "जलज", "बाजरा", "फन", "षटभुज", "फल", "भट", "कमीज", "भूख", "जामुन", "भूमि", "फरक", "जलन", "जमीन", "बालटी"]
+        },
+        "5": { 
+            words: [{ img: "dhenu.jpg", hi: "धेनु", en: "Cow" }, { img: "belan.jpg", hi: "बेलन", en: "Rolling Pin" }, { img: "maina.jpg", hi: "मैना", en: "Myna" }, { img: "nainan.jpg", hi: "नैनन", en: "Eyes" }, { img: "kekda.jpg", hi: "केकड़ा", en: "Crab" }, { img: "tairak.jpg", hi: "तैराक", en: "Swimmer" }, { img: "rail.jpg", hi: "रेल", en: "Train" }, { img: "pair.jpg", hi: "पैर", en: "Foot" }, { img: "mej.jpg", hi: "मेज", en: "Table" }, { img: "paise.jpg", hi: "पैसे", en: "Money" }, { img: "kela.jpg", hi: "केला", en: "Banana" }],
+            l3Words: ["गरम", "तमस", "थल", "धन", "गेरुआ", "गैर", "तेजाब", "तैनात", "तेल", "तैल", "थैली", "धेनु", "सेमल", "मैना", "नैनन", "पैगाम", "सैर", "पैसे", "केकड़ा", "घृत", "कृत"],
+            l5Words: ["गरम", "तमस", "थल", "धन", "गेरुआ", "गैर", "तेजाब", "तैनात", "तेल", "तैल", "थैली", "धेनु", "सेमल", "मैना", "नैनन", "पैगाम", "सैर", "पैसे", "केकड़ा", "घृत", "कृत"]
+        },
+        "6": { 
+            words: [{ img: "jhopadi.jpg", hi: "झोपड़ी", en: "Hut" }, { img: "jhash.jpg", hi: "झष", en: "Fish" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gautam.jpg", hi: "गौतम", en: "Gautam" }, { img: "koyal.jpg", hi: "कोयल", en: "Cuckoo" }, { img: "paudha.jpg", hi: "पौधा", en: "Plant" }],
+            l3Words: ["ओले", "ओस", "औज़ार", "औरत", "औषध", "हौसला", "झोपड़ा", "झोली", "पौधा", "शोभा", "शौकीन", "झौर", "यौगिक", "खिलौना", "शोक", "होड़", "बौर", "लौकी", "नौकर", "सौ"],
+            l5Words: ["ओले", "ओस", "औज़ार", "औरत", "औषध", "हौसला", "झोपड़ा", "झोली", "पौधा", "शोभा", "शौकीन", "झौर", "यौगिक", "खिलौना", "शोक", "होड़", "बौर", "लौकी", "नौकर", "सौ"]
+        },
+        "7": { 
+            words: [{ img: "ghanti.jpg", hi: "घंटी", en: "Bell" }, { img: "langur.jpg", hi: "लंगूर", en: "Baboon" }, { img: "pankha.jpg", hi: "पंखा", en: "Fan" }, { img: "panchhi.jpg", hi: "पंछी", en: "Bird" }, { img: "hans.jpg", hi: "हंस", en: "Swan" }, { img: "tambura.jpg", hi: "तंबूरा", en: "Tambura" }, { img: "shankh.jpg", hi: "शंख", en: "Conch" }, { img: "santari.jpg", hi: "संतरी", en: "Guard" }, { img: "hansiya.jpg", hi: "हँसिया", en: "Sickle" }, { img: "chanda.jpg", hi: "चंदा", en: "Moon" }],
+            l3Words: ["संगीत", "दुःख", "खंजर", "चंपक", "रंक", "जंजीर", "ठंडा", "शंख", "संकट", "नंदन", "नंबर", "संगत", "पंडित", "मंजरी", "अंबर", "अंगूर", "पंकज", "संगमरमर", "अंतःपुर", "मनःपटल", "अतः"],
+            l5Words: ["संगीत", "दुःख", "खंजर", "चंपक", "रंक", "जंजीर", "ठंडा", "शंख", "संकट", "नंदन", "नंबर", "संगत", "पंडित", "मंजरी", "अंबर", "अंगूर", "पंकज", "संगमरमर", "अंतःपुर", "मनःपटल", "अतः"]
+        },
+        "8": { 
+            words: [{ img: "pakshi.jpg", hi: "पक्षी", en: "Bird" }, { img: "trikon.jpg", hi: "त्रिकोण", en: "Triangle" }, { img: "netra.jpg", hi: "नेत्र", en: "Eye" }, { img: "yagya.jpg", hi: "यज्ञ", en: "Yagya" }, { img: "ashru.jpg", hi: "अश्रु", en: "Tear" }, { img: "vriksh.jpg", hi: "वृक्ष", en: "Tree" }, { img: "shramik.jpg", hi: "श्रमिक", en: "Worker" }, { img: "gyani.jpg", hi: "ज्ञानी", en: "Scholar" }, { img: "chatra.jpg", hi: "छत्र", en: "Umbrella" }, { img: "nakshatra.jpg", hi: "नक्षत्र", en: "Star" }, { img: "trishul.jpg", hi: "त्रिशूल", en: "Trident" }, { img: "patra.jpg", hi: "पत्र", en: "Letter" }],
+            l3Words: ["कक्षा", "पक्षी", "यज्ञ", "छात्र", "पत्र", "विज्ञान", "ज्ञानी", "गाँव", "आँख", "कारवाँ", "माँग", "पुत्र", "कॉर", "शत्रु", "माँ", "पक्ष", "डॉक्टर", "ऊँट", "मित्र", "चाँद", "कॉपी", "साक्षी", "लॉन", "मॉडल"],
+            l5Words: ["कक्षा", "पक्षी", "यज्ञ", "छात्र", "पत्र", "विज्ञान", "ज्ञानी", "गाँव", "आँख", "कारवाँ", "माँग", "पुत्र", "कॉर", "शत्रु", "माँ", "पक्ष", "डॉक्टर", "ऊँट", "मित्र", "चाँद", "कॉपी", "साक्षी", "लॉन", "मॉडल"]
+        },
+        "9": { 
+            words: [{ img: "gamla.jpg", hi: "गमला", en: "Pot" }, { img: "khilauna.jpg", hi: "खिलौना", en: "Toy" }, { img: "angoothi.jpg", hi: "अंगूठी", en: "Ring" }, { img: "paudha.jpg", hi: "पौधा", en: "Plant" }, { img: "choodiyan.jpg", hi: "चूड़ियाँ", en: "Bangles" }, { img: "uphaar.jpg", hi: "उपहार", en: "Gift" }, { img: "dadadadi.jpg", hi: "दादा-दादी", en: "Grandparents" }, { img: "mithaiyan.jpg", hi: "मिठाइयाँ", en: "Sweets" }],
+            l3Words: ["चित्रा", "बधाई", "किताब", "कहानी", "खिलौना", "गुड़िया", "चीज़", "खरीद", "लाड़ली", "नाज़", "भला", "ढंग", "एक", "दो", "तीन", "चार", "पाँच", "छह", "सात", "आठ", "नौ", "दस", "सफेद", "केसरिया", "लाल", "नीला", "काला", "बैंगनी", "पीला", "हरा", "गुलाबी"],
+            l5Words: ["चित्रा", "बधाई", "किताब", "कहानी", "खिलौना", "गुड़िया", "चीज़", "खरीद", "लाड़ली", "नाज़", "भला", "ढंग", "एक", "दो", "तीन", "चार", "पाँच", "छह", "सात", "आठ", "नौ", "दस", "सफेद", "केसरिया", "लाल", "नीला", "काला", "बैंगनी", "पीला", "हरा", "गुलाबी"]
+        },
+        "animals": { 
+            words: [{ img: "bagh.jpg", hi: "बाघ", en: "Tiger" }, { img: "hathi.jpg", hi: "हाथी", en: "Elephant" }, { img: "bhalu.jpg", hi: "भालू", en: "Bear" }, { img: "khargosh.jpg", hi: "खरगोश", en: "Rabbit" }, { img: "bhains.jpg", hi: "भैंस", en: "Buffalo" }, { img: "gadha.jpg", hi: "गधा", en: "Donkey" }, { img: "kauva.jpg", hi: "कौआ", en: "Crow" }, { img: "kabutar.jpg", hi: "कबूतर", en: "Pigeon" }, { img: "tota.jpg", hi: "तोता", en: "Parrot" }, { img: "mor.jpg", hi: "मोर", en: "Peacock" }, { img: "gauraiya.jpg", hi: "गौरैया", en: "Sparrow" }, { img: "cheel.jpg", hi: "चील", en: "Eagle" }],
+            l3Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"],
+            l5Words: ["बाघ", "हाथी", "भालू", "खरगोश", "भैंस", "गधा", "कौआ", "कबूतर", "तोता", "मोर", "गौरैया", "चील"]
+        },
+        "veggies": { 
+            words: [{ img: "aaloo.jpg", hi: "आलू", en: "Potato" }, { img: "pyaj.jpg", hi: "प्याज", en: "Onion" }, { img: "mirch.jpg", hi: "मिर्च", en: "Chili" }, { img: "tamatar.jpg", hi: "टमाटर", en: "Tomato" }, { img: "turai.jpg", hi: "तुरई", en: "Ridge Gourd" }, { img: "baingan.jpg", hi: "बैंगन", en: "Brinjal" }, { img: "matar.jpg", hi: "मटर", en: "Peas" }, { img: "bhindi.jpg", hi: "भिंडी", en: "Okra" }, { img: "lauki.jpg", hi: "लौकी", en: "Bottle Gourd" }, { img: "adrak.jpg", hi: "अदरक", en: "Ginger" }, { img: "sem.jpg", hi: "सेम", en: "Beans" }, { img: "kakdi.jpg", hi: "ककड़ी", en: "Cucumber" }, { img: "karela.jpg", hi: "करेला", en: "Bitter Gourd" }, { img: "kundru.jpg", hi: "कुंदरू", en: "Ivy Gourd" }, { img: "chichinda.jpg", hi: "चिचिंडा", en: "Snake Gourd" }, { img: "shakarkand.jpg", hi: "शकरकंद", en: "Sweet Potato" }, { img: "phoolgobhi.jpg", hi: "फूल गोभी", en: "Cauliflower" }, { img: "bandgobhi.jpg", hi: "बंद गोभी", en: "Cabbage" }, { img: "sahjan.jpg", hi: "सहजन", en: "Drumstick" }, { img: "gajar.jpg", hi: "गाजर", en: "Carrot" }, { img: "palak.jpg", hi: "पालक", en: "Spinach" }, { img: "chaulai.jpg", hi: "चौलाई", en: "Amaranth" }, { img: "haridhaniya.jpg", hi: "हरी धनिया", en: "Coriander" }, { img: "meethaneem.jpg", hi: "मीठा नीम", en: "Curry Leaves" }, { img: "lahsun.jpg", hi: "लहसुन", en: "Garlic" }, { img: "kumhada.jpg", hi: "कुम्हड़ा", en: "Pumpkin" }, { img: "imli.jpg", hi: "इमली", en: "Tamarind" }, { img: "lobiya.jpg", hi: "लोबिया", en: "Black-eyed Peas"}, { img: "petha.jpg", hi: "पेठा", en: "Ash Gourd"}, { img: "parwal.jpg", hi: "परवल", en: "Pointed Gourd"}, { img: "kathal.jpg", hi: "कटहल", en: "Jackfruit"}, { img: "shaljam.jpg", hi: "शलजम", en: "Turnip"}, { img: "tinde.jpg", hi: "टिंडे", en: "Apple Gourd"}],
+            l3Words: ["आलू", "प्याज", "मिर्च", "टमाटर", "तुरई", "बैंगन", "मटर", "भिंडी", "लौकी", "अदरक", "सेम", "ककड़ी", "करेला", "कुंदरू", "चिचिंडा", "शकरकंद", "गाजर", "पालक", "चौलाई", "लहसुन", "कुम्हड़ा", "इमली", "फूल गोभी", "बंद गोभी", "हरी धनिया", "मीठा नीम", "लोबिया", "पेठा", "परवल", "कटहल", "शलजम", "टिंडे"],
+            l5Words: ["आलू", "प्याज", "मिर्च", "टमाटर", "तुरई", "बैंगन", "मटर", "भिंडी", "लौकी", "अदरक", "सेम", "ककड़ी", "करेला", "कुंदरू", "चिचिंडा", "शकरकंद", "गाजर", "पालक", "चौलाई", "लहसुन", "कुम्हड़ा", "इमली", "फूल गोभी", "बंद गोभी", "हरी धनिया", "मीठा नीम", "लोबिया", "पेठा", "परवल", "कटहल", "शलजम", "टिंडे"]
+        },
+        "flowers": { 
+            words: [{ img: "gulab.jpg", hi: "गुलाब", en: "Rose" }, { img: "kamal.jpg", hi: "कमल", en: "Lotus" }, { img: "kevda.jpg", hi: "केवड़ा", en: "Kewra" }, { img: "chameli.jpg", hi: "चमेली", en: "Jasmine" }, { img: "champa.jpg", hi: "चंपा", en: "Champa" }, { img: "juhi.jpg", hi: "जूही", en: "Juhi" }, { img: "gudhal.jpg", hi: "गुड़हल", en: "Hibiscus" }, { img: "genda.jpg", hi: "गेंदा", en: "Marigold" }, { img: "parijat.jpg", hi: "पारिजात", en: "Parijat" }, { img: "surajmukhi.jpg", hi: "सूरजमुखी", en: "Sunflower" }],
+            l3Words: ["गुलाब", "कमल", "केवड़ा", "चमेली", "चंपा", "जूही", "गुड़हल", "गेंदा", "पारिजात", "सूरजमुखी"],
+            l5Words: ["गुलाब", "कमल", "केवड़ा", "चमेली", "चंपा", "जूही", "गुड़हल", "गेंदा", "पारिजात", "सूरजमुखी"]
+        }
+    };
+
+    // Global Game State
+    let currentMarks = 0;
+    let solvedWordsGlobal = new Set();
+    let synth = window.speechSynthesis;
+    let manualVoice = null;
+    
+    // Level States
+    let currentWordList = [], currentIndex = 0, currentHindiWord = "", availableLetters = [], selectedLetters = [];
+    let l3AllWords = [], l3ActiveTarget = [], l3Completed = [];
+    let l12Completed = []; 
+    let l3InputText = "";
+
+    function shuffleArray(a) { let s = [...a]; for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; } return s; }
+
+    function getDecoyPool(lessonKey) {
+        let pool = [];
+        for (let key of lessonOrder) {
+            if (keyboardData[key]) pool = pool.concat(keyboardData[key].c).concat(keyboardData[key].v);
+            let checkKey = lessonKey ? lessonKey.toString() : "";
+            if (key.toString() === checkKey) break;
+        }
+        return pool.length > 0 ? pool : ['क','ल','म','न','र','स'];
+    }
+
+    // --- PROGRESSIVE SORTING LOGIC (SIMPLE TO COMPLEX) ---
+    function getProgressiveWordList(wordSource) {
+        if (!wordSource) return [];
+        let grouped = {};
+        wordSource.forEach(w => {
+            if (!w) return;
+            let len = segmentHindi(w).length; 
+            if (!grouped[len]) grouped[len] = [];
+            grouped[len].push(w);
+        });
+        
+        let sortedList = [];
+        Object.keys(grouped).map(Number).sort((a,b) => a - b).forEach(len => {
+            sortedList = sortedList.concat(shuffleArray(grouped[len]));
+        });
+        return sortedList;
+    }
+
+    // ==========================================
+    // MAIN NAVIGATION & SETUP
+    // ==========================================
+    function changeLesson() {
+        const lesson = document.getElementById("lesson-select").value;
+        const level = document.getElementById("level-select").value;
+        
+        if (level === "1" || level === "2") {
+            document.getElementById("l12-view").style.display = "flex";
+            document.getElementById("l3-view").style.display = "none";
+            
+            currentWordList = shuffleArray(lessonsData[lesson].words.map(w => ({...w, lessonOrigin: lesson})));
+            currentIndex = 0;
+            l12Completed = [];
+            renderL12Completed();
+            loadWord();
+        } else {
+            document.getElementById("l12-view").style.display = "none";
+            document.getElementById("l3-view").style.display = "flex";
+            
+            buildL3Keyboard(lesson);
+            
+            let wordSource = (level === "5") ? [...lessonsData[lesson].l5Words] : [...lessonsData[lesson].l3Words];
+            l3AllWords = getProgressiveWordList(wordSource);
+            
+            l3ActiveTarget = [];
+            l3Completed = [];
+            l3InputText = "";
+            document.getElementById("l3-workbench").innerText = "";
+            document.getElementById("l3-status-message").innerText = "";
+            
+            const titleTarget = document.getElementById("l3-target-title");
+            const wordsTarget = document.getElementById("l3-target-words");
+            const btnSubmit = document.getElementById("l3-submit-btn");
+            const btnListen = document.getElementById("l5-listen-btn");
+            const btnFinish = document.getElementById("l5-finish-btn");
+            
+            btnSubmit.style.display = "block";
+            
+            if (level === "3") {
+                titleTarget.style.display = "block"; wordsTarget.style.display = "block";
+                btnListen.style.display = "none"; btnFinish.style.display = "none";
+            } else if (level === "4") {
+                titleTarget.style.display = "none"; wordsTarget.style.display = "none";
+                btnListen.style.display = "none"; btnFinish.style.display = "none";
+            } else if (level === "5") {
+                titleTarget.style.display = "none"; wordsTarget.style.display = "none";
+                btnListen.style.display = "inline-block"; btnFinish.style.display = "block";
+                btnSubmit.style.display = "none"; 
+            }
+            
+            loadNextL3Batch();
+        }
+    }
+
+    function restartForNewStudent() { 
+        currentMarks = 0; 
+        solvedWordsGlobal.clear(); 
+        document.getElementById("marks-display").innerText = `Marks: 0`;
+        resetTimer(); 
+        changeLesson(); 
+    }
+
+    // --- END OF LESSON LOGIC ---
+    function triggerLessonComplete() {
+        pauseTimer();
+        clapSound.play().catch(e => console.log(e));
+        
+        const currentLesson = document.getElementById("lesson-select").value;
+        const idx = lessonOrder.indexOf(currentLesson);
+        
+        if (idx < lessonOrder.length - 1) {
+            document.getElementById("end-lesson-text").innerText = `Lesson Completed!`;
+            document.getElementById("end-lesson-overlay").style.display = "flex";
+        } else {
+            showFinalSummary();
+        }
+    }
+
+    function continueToNextLesson() {
+        document.getElementById("end-lesson-overlay").style.display = "none";
+        const currentLesson = document.getElementById("lesson-select").value;
+        const idx = lessonOrder.indexOf(currentLesson);
+        document.getElementById("lesson-select").value = lessonOrder[idx + 1];
+        changeLesson(); 
+    }
+
+    function showFinalSummary() {
+        document.getElementById("end-lesson-overlay").style.display = "none";
+        document.getElementById("summary-overlay").style.display = "flex";
+        
+        document.getElementById("final-score-text").innerText = `Total Marks: ${currentMarks}`;
+        
+        let h = Math.floor(timerSeconds / 3600);
+        let m = Math.floor((timerSeconds % 3600) / 60);
+        let s = timerSeconds % 60;
+        let display = (h > 0 ? (h < 10 ? "0" + h : h) + ":" : "") + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        document.getElementById("final-time-text").innerText = `Total Time: ${display}`;
+    }
+
+    function closeSummaryAndReset() {
+        document.getElementById("summary-overlay").style.display = "none";
+        restartForNewStudent();
+    }
+
+    // ==========================================
+    // LEVEL 1 & 2 LOGIC
+    // ==========================================
+    function loadWord() {
+        if (currentIndex >= currentWordList.length) { triggerLessonComplete(); return; }
+        
+        const img = document.getElementById("word-image");
+        const aBox = document.getElementById("answer-box");
+        const sBox = document.getElementById("scrambled-box");
+        
+        aBox.classList.remove("glow-success");
+        aBox.innerHTML = ""; sBox.innerHTML = "";
+        document.getElementById("status-message").innerText = "";
+        document.getElementById("skip-btn").style.display = "none";
+        document.getElementById("clear-btn").style.display = "none";
+        document.getElementById("pronounce-btn").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("back-btn").style.display = "none";
+
+        img.style.display = "none"; img.src = "";
+        document.getElementById("fallback-text").style.display = "none";
+        
+        document.getElementById("loading-spinner").style.display = "block";
+        pauseTimer(); 
+
+        currentHindiWord = currentWordList[currentIndex].hi;
+        document.getElementById("word-count").innerText = `${currentIndex + 1} / ${currentWordList.length}`;
+        document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`;
+
+        img.src = currentWordList[currentIndex].img;
+        img.onload = () => { document.getElementById("loading-spinner").style.display = "none"; img.style.display = "block"; generateTiles(); };
+        img.onerror = () => { document.getElementById("loading-spinner").style.display = "none"; document.getElementById("fallback-text").innerText = currentWordList[currentIndex].en; document.getElementById("fallback-text").style.display = "block"; generateTiles(); };
+    }
+
+    function generateTiles() {
+        let correctTiles = segmentHindi(currentHindiWord);
+        availableLetters = shuffleArray([...correctTiles]);
+        
+        if (document.getElementById("level-select").value === "2") {
+            let pool = getDecoyPool(currentWordList[currentIndex].lessonOrigin);
+            availableLetters.push(pool[Math.floor(Math.random()*pool.length)]);
+        }
+        
+        availableLetters = shuffleArray(availableLetters);
+        selectedLetters = []; 
+        document.getElementById("status-message").innerText = "";
+        
+        document.getElementById("skip-btn").style.display = "inline-block";
+        document.getElementById("clear-btn").style.display = "inline-block";
+        if (document.getElementById("voice-select").options.length > 1 || manualVoice) { document.getElementById("pronounce-btn").style.display = "inline-block"; }
+        document.getElementById("back-btn").style.display = (currentIndex > 0) ? "inline-block" : "none";
+        
+        updateUI();
+        startTimer();
+    }
+
+    function moveLetter(index, fromAvailable) {
+        if (fromAvailable) { selectedLetters.push(availableLetters[index]); availableLetters.splice(index, 1); }
+        else { availableLetters.push(selectedLetters[index]); selectedLetters.splice(index, 1); }
+        updateUI();
+        
+        if (selectedLetters.join("") === currentHindiWord) {
+            document.getElementById("answer-box").classList.add("glow-success");
+            document.querySelectorAll("#answer-box .letter-tile").forEach(t => t.classList.add("tile-correct"));
+            document.getElementById("next-btn").style.display = "inline-block";
+            document.getElementById("skip-btn").style.display = "none";
+            document.getElementById("clear-btn").style.display = "none";
+            
+            if (!l12Completed.includes(currentHindiWord)) {
+                l12Completed.push(currentHindiWord);
+                renderL12Completed();
+            }
+
+            if (!solvedWordsGlobal.has(currentHindiWord)) {
+                currentMarks += (document.getElementById("level-select").value === "1" ? 1 : 2);
+                solvedWordsGlobal.add(currentHindiWord);
+                document.getElementById("marks-display").innerText = `Marks: ${currentMarks}`; 
+                clapSound.play().catch(e => console.log(e));
+            } else {
+                document.getElementById("status-message").innerText = "Already Scored! ✔️";
+                document.getElementById("status-message").style.color = "#34a853";
+            }
+        } else if (selectedLetters.length === segmentHindi(currentHindiWord).length) {
+            document.getElementById("status-message").innerText = "❌ Try again!";
+            document.getElementById("status-message").style.color = "#d32f2f";
+            wrongSound.play().catch(e => console.log(e));
+        } else {
+            document.getElementById("status-message").innerText = "";
+        }
+    }
+
+    function skipWord() { if (currentIndex < currentWordList.length - 1) { currentIndex++; loadWord(); } else { triggerLessonComplete(); } }
+    function nextWord() { if (currentIndex < currentWordList.length - 1) { currentIndex++; loadWord(); } else { triggerLessonComplete(); } }
+    function prevWord() { if (currentIndex > 0) { currentIndex--; loadWord(); } }
+    function clearAnswer() { availableLetters = [...availableLetters, ...selectedLetters]; selectedLetters = []; updateUI(); }
+    
+    function updateUI() {
+        const sBox = document.getElementById("scrambled-box"), aBox = document.getElementById("answer-box");
+        sBox.innerHTML = ""; aBox.innerHTML = "";
+        availableLetters.forEach((l, i) => { const d = document.createElement("div"); d.className = "letter-tile"; d.innerText = l; d.onclick = () => moveLetter(i, true); sBox.appendChild(d); });
+        selectedLetters.forEach((l
